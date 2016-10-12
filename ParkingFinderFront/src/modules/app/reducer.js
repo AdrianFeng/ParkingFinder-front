@@ -4,8 +4,8 @@ import { TOGGLE, SELECTMENU, UPDATEMENU } from './constants'
 const initialState = {
 	isOpen: false,
 	selectedItem: "MenuOne",
-	name: "Yao",
-	url: "https://pickaface.net/gallery/avatar/Opi51c74d0125fd4.png"
+	name: "Yao Zhang",
+	url: "https://breakinggeek.files.wordpress.com/2013/11/c0a80f0578993697efb53100a772f162.png"
 }
 
 export default handleActions({

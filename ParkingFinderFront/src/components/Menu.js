@@ -1,38 +1,72 @@
 import React, { PropTypes } from 'react'
-import { StyleSheet, View, ScrollView, Dimensions } from 'react-native'
+import { StyleSheet, View, Dimensions, Image, Text, TouchableOpacity } from 'react-native'
 
-import MenuItem from './MenuItem'
 import MenuProfile from './MenuProfile'
 
 const window = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   menu: {
-    flex: 1,
     width: window.width,
     height: window.height,
-    backgroundColor: 'gray',
-    padding: 20,
+    backgroundColor: '#F9F9F9',
   },
+  menuIcon: {
+    width: 12,
+    height: 12,
+    marginLeft: 20,
+    paddingRight: 20,
+    marginTop: 3
+  },
+  menuItem: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  menuItemText: {
+    fontSize: 16,
+    fontWeight: '300',
+    color: '#6B6B76',
+  }
 })
 
 const Menu = (props) => {
   const { onItemSelected, userName, userUrl } = props
 
   return (
-    <ScrollView scrollsToTop={false} style={styles.menu}>
+    <View scrollsToTop={false} style={styles.menu}>
         <MenuProfile profileUrl={userUrl}>
         	{userName}
         </MenuProfile>
+        <TouchableOpacity onPress={() => onItemSelected('MY INFO')}>
+          <View style={styles.menuItem}>
+            <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuHome.png')} />
+            <Text style={styles.menuItemText}>MY INFO</Text>
+          </View>
+        </TouchableOpacity>
 
-        <MenuItem onClick={() => onItemSelected('MenuOne')}>
-        	MenuOne
-        </MenuItem>
+        <TouchableOpacity onPress={() => onItemSelected('HISTORY')}>
+          <View style={styles.menuItem} onPress={() => onItemSelected('HISTORY')}>
+            <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuHistory.png')} />
+            <Text style={styles.menuItemText}>HISTORY</Text>
+          </View>
+        </TouchableOpacity>
 
-         <MenuItem onClick={() => onItemSelected('MenuTwo')}>
-        	MenuTwo
-        </MenuItem>
-    </ScrollView>
+        <TouchableOpacity onPress={() => onItemSelected('HELP')}>
+          <View style={styles.menuItem} onPress={() => onItemSelected('HELP')}>
+            <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuHelp.png')} />
+            <Text style={styles.menuItemText}>HELP</Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => onItemSelected('SETTINGS')}>
+          <View style={styles.menuItem} onPress={() => onItemSelected('SETTINGS')}>
+            <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuSetting.png')} />
+            <Text style={styles.menuItemText}>SETTINGS</Text>
+          </View>
+        </TouchableOpacity>
+    </View>
   )
 }
 
