@@ -1,4 +1,4 @@
-import { TOGGLE, SELECTMENU, UPDATEMENU } from './constants'
+import { TOGGLE, SELECTMENU, UPDATEMENU, OPENMODAL, CLOSEMODAL } from './constants'
 
 export const toggleMenu = () => {
   return {
@@ -21,5 +21,17 @@ export const updateMenu = (isOpen) => {
     payload: {
     	isOpen
     }
+  }
+}
+
+export const closeModal = () => {
+  return {
+    type: CLOSEMODAL,
+  }
+}
+
+export const openModal = () => {
+  return {
+    type: OPENMODAL,
   }
 }

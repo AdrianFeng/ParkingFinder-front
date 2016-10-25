@@ -32,40 +32,42 @@ const styles = StyleSheet.create({
 })
 
 const Menu = (props) => {
-  const { onItemSelected, userName, userUrl } = props
+  const { onItemSelected, userName, userUrl, popupModal } = props
 
   return (
     <View scrollsToTop={false} style={styles.menu}>
         <MenuProfile profileUrl={userUrl}>
         	{userName}
         </MenuProfile>
-        <TouchableOpacity onPress={() => onItemSelected('MY INFO')}>
+
+        <TouchableOpacity onPress={() => {onItemSelected('MY INFO'), popupModal()}}>
           <View style={styles.menuItem}>
             <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuHome.png')} />
             <Text style={styles.menuItemText}>MY INFO</Text>
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => onItemSelected('HISTORY')}>
+        <TouchableOpacity onPress={() => {onItemSelected('HISTORY'), popupModal()}}>
           <View style={styles.menuItem} onPress={() => onItemSelected('HISTORY')}>
             <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuHistory.png')} />
             <Text style={styles.menuItemText}>HISTORY</Text>
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => onItemSelected('HELP')}>
+        <TouchableOpacity onPress={() => {onItemSelected('HELP'), popupModal()}}>
           <View style={styles.menuItem} onPress={() => onItemSelected('HELP')}>
             <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuHelp.png')} />
             <Text style={styles.menuItemText}>HELP</Text>
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => onItemSelected('SETTINGS')}>
+        <TouchableOpacity onPress={() => {onItemSelected('SETTINGS'), popupModal()}}>
           <View style={styles.menuItem} onPress={() => onItemSelected('SETTINGS')}>
             <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuSetting.png')} />
             <Text style={styles.menuItemText}>SETTINGS</Text>
           </View>
         </TouchableOpacity>
+
     </View>
   )
 }
@@ -73,7 +75,8 @@ const Menu = (props) => {
 Menu.propTypes = {
   onItemSelected: PropTypes.func.isRequired,
   userName: PropTypes.string.isRequired,
-  userUrl: PropTypes.string.isRequired
+  userUrl: PropTypes.string.isRequired,
+  popupModal: PropTypes.func.isRequired,
 }
 
 export default Menu

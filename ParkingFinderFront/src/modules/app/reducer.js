@@ -1,11 +1,15 @@
 import { handleActions } from 'redux-actions'
-import { TOGGLE, SELECTMENU, UPDATEMENU } from './constants'
+import { TOGGLE, SELECTMENU, UPDATEMENU, OPENMODAL, CLOSEMODAL } from './constants'
 
 const initialState = {
 	isOpen: false,
-	selectedItem: "MenuOne",
+	selectedItem: "default",
 	name: "Yao Zhang",
-	url: "https://breakinggeek.files.wordpress.com/2013/11/c0a80f0578993697efb53100a772f162.png"
+	url: "https://breakinggeek.files.wordpress.com/2013/11/c0a80f0578993697efb53100a772f162.png",
+	myInfoVisible: false,
+	historyVisible: false,
+    helpVisible: false,
+    settingsVisible: false,
 }
 
 export default handleActions({
@@ -34,6 +38,51 @@ export default handleActions({
 		return {
 			...state,
 			isOpen: isOpen
+		}
+	},
+	[OPENMODAL]: (state, action) => {
+		const { selectedItem } = state
+
+		switch(selectedItem) {
+			case "MY INFO": 
+				return {
+					...state,
+					myInfoVisible: true
+				}
+				break;
+			case "HISTORY": 
+				return {
+					...state,
+					historyVisible: true
+				}
+				break;
+			case "HELP": 
+				return {
+					...state,
+					helpVisible: true
+				}
+				break;
+			case "SETTINGS": 
+				return {
+					...state,
+					settingsVisible: true
+				}
+				break;
+			default: 
+				return {
+					...state,
+				}
+				break;
+		}
+	},
+	[CLOSEMODAL]: (state, action) => {
+		return {
+			...state,
+			myInfoVisible: false,
+			historyVisible: false,
+			helpVisible: false,
+			settingsVisible: false,
+			selectedItem: "default",
 		}
 	},
 }, initialState)

@@ -1,8 +1,8 @@
 import React, { PropTypes, Component } from 'react'
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, Image } from 'react-native'
 import { connect } from 'react-redux'
 
-import { Menu, MenuButton } from './../../components'
+import { Menu, MenuButton, MyInfo, History, Help, Settings } from './../../components'
 import * as actions from './actions'
 
 const SideMenu = require('react-native-side-menu');
@@ -31,12 +31,6 @@ const styles = StyleSheet.create({
   },
 })
 
-const renderMenu = (onMenuItemSelected, name, url) => {
-  return (
-    <Menu onItemSelected={onMenuItemSelected} userName={name} userUrl={url} />
-  )
-}
-
 const App = (props) => {
   const {
     onMenuItemSelected,
@@ -45,12 +39,18 @@ const App = (props) => {
     isOpen,
     updateMenuState,
     selectedItem,
-    toggle
+    toggle,
+    myInfoVisible,
+    historyVisible,
+    helpVisible,
+    settingsVisible,
+    closeModal,
+    openModal,
   } = props
 
   return (
       <SideMenu
-        menu={renderMenu(onMenuItemSelected, name, url)}
+        menu={<Menu onItemSelected={onMenuItemSelected} userName={name} userUrl={url} popupModal={openModal}/>}
         isOpen={isOpen}
         onChange={(isOpen) => updateMenuState(isOpen)}>
         <View style={styles.container}>
@@ -67,13 +67,16 @@ const App = (props) => {
           <Text style={styles.instructions}>
             Current selected menu item is: {selectedItem}
           </Text>
+          <MyInfo visible={myInfoVisible} requestClose={closeModal} />
+          <History visible={historyVisible} requestClose={closeModal} />
+          <Help visible={helpVisible} requestClose={closeModal} />
+          <Settings visible={settingsVisible} requestClose={closeModal} />
         </View>
         <MenuButton onClick={toggle}>
           <Image
               source={require('./../../assets/menu.png')} style={{width: 32, height: 32}} />
         </MenuButton>
       </SideMenu>
-
   )
 }
 
@@ -86,7 +89,13 @@ App.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   updateMenuState: PropTypes.func.isRequired,
   selectedItem: PropTypes.string.isRequired,
-  toggle: PropTypes.func.isRequired
+  toggle: PropTypes.func.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  openModal: PropTypes.func.isRequired,
+  myInfoVisible: PropTypes.bool.isRequired,
+  historyVisible: PropTypes.bool.isRequired,
+  helpVisible: PropTypes.bool.isRequired,
+  settingsVisible: PropTypes.bool.isRequired,
 }
 
 export default connect(
@@ -94,11 +103,17 @@ export default connect(
     isOpen: state.app.isOpen,
     selectedItem: state.app.selectedItem,
     name: state.app.name,
-    url: state.app.url
+    url: state.app.url,
+    myInfoVisible: state.app.myInfoVisible,
+    historyVisible: state.app.historyVisible,
+    helpVisible: state.app.helpVisible,
+    settingsVisible: state.app.settingsVisible,
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
     onMenuItemSelected: (item) => dispatch(actions.selectMenu(item)),
     updateMenuState: (isOpen) => dispatch(actions.updateMenu(isOpen)),
+    closeModal: () => dispatch(actions.closeModal()),
+    openModal: () => dispatch(actions.openModal()),
   })
 )(App)
