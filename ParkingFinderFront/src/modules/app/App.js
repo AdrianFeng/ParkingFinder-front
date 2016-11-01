@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react'
 import { StyleSheet, View, Text, Image, MapView, TextInput, TouchableOpacity, Dimensions, NavigatorIOS,} from 'react-native'
 import { connect } from 'react-redux'
 
-import { Menu, MenuButton, MyInfo, History, Help, Settings, } from './../../components'
+import { Menu, MenuButton, MyInfo, History, Help, Settings, FBLoginButton } from './../../components'
 import * as actions from './actions'
 
 const SideMenu = require('react-native-side-menu');
@@ -107,7 +107,13 @@ const App = (props) => {
     closeModal,
     openModal,
     navigator,
-  } = props
+    accessToken,
+    onFBLogin,
+  } = props;
+
+  if (!accessToken) {
+    return (<FBLoginButton onFBLogin={onFBLogin}/>);
+  }
 
   return (
       <SideMenu
@@ -140,7 +146,7 @@ const App = (props) => {
 
 }
 
-App.displayName = 'App'
+App.displayName = 'App';
 
 App.propTypes = {
   onMenuItemSelected: PropTypes.func.isRequired,
@@ -152,6 +158,7 @@ App.propTypes = {
   toggle: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
+  onFBLogin: PropTypes.func.isRequired,
   myInfoVisible: PropTypes.bool.isRequired,
   historyVisible: PropTypes.bool.isRequired,
   helpVisible: PropTypes.bool.isRequired,
@@ -168,6 +175,7 @@ export default connect(
     historyVisible: state.app.historyVisible,
     helpVisible: state.app.helpVisible,
     settingsVisible: state.app.settingsVisible,
+    accessToken: state.app.accessToken,
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
@@ -175,5 +183,6 @@ export default connect(
     updateMenuState: (isOpen) => dispatch(actions.updateMenu(isOpen)),
     closeModal: () => dispatch(actions.closeModal()),
     openModal: () => dispatch(actions.openModal()),
+    onFBLogin: (accessToken) => actions.onFBLogin(accessToken, dispatch)
   })
 )(App)

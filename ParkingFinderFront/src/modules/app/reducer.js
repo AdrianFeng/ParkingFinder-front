@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import { TOGGLE, SELECTMENU, UPDATEMENU, OPENMODAL, CLOSEMODAL } from './constants'
+import { TOGGLE, SELECTMENU, UPDATEMENU, OPENMODAL, CLOSEMODAL, FBLOGIN } from './constants'
 
 const initialState = {
 	isOpen: false,
@@ -85,4 +85,20 @@ export default handleActions({
 			selectedItem: "default",
 		}
 	},
+	[FBLOGIN]: (state, action) => {
+		const { payload } = action;
+		if (payload.error) {
+			return {
+				...state,
+				error: payload.error.message,
+				accessToken: null,
+			}
+		} else {
+			return {
+				...state,
+				accessToken: payload.accessToken,
+				user: payload.user
+			}
+		}
+	}
 }, initialState)
