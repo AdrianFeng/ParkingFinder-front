@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import { StyleSheet, View, Text, Image, MapView, TextInput, TouchableOpacity, Dimensions} from 'react-native'
+import { StyleSheet, View, Text, Image, MapView, TextInput, TouchableOpacity, Dimensions, NavigatorIOS,} from 'react-native'
 import { connect } from 'react-redux'
 
 import { Menu, MenuButton, MyInfo, History, Help, Settings, } from './../../components'
@@ -56,6 +56,65 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   }
 })
+
+class EmptyPage extends React.Component {
+  render() {
+    return (
+      <View style={styles.emptyPage}>
+        <Text style={styles.emptyPageText}>
+          {this.props.text}
+        </Text>
+      </View>
+    );
+  }
+}
+
+class NavigatorIOSExamplePage extends React.Component {
+  render() {
+    var recurseTitle = 'Recurse Navigation';
+    if (!this.props.depth || this.props.depth === 1) {
+      recurseTitle += ' - more examples here';
+    }
+    return (
+          {this._renderRow('Push View Example', () => {
+            this.props.navigator.push({
+              title: 'Very Long Custom View Example Title',
+              component: EmptyPage,
+            });
+          })}
+    );
+  }
+
+  _renderRow = (title: string, onPress: Function) => {
+    return (
+        <TouchableOpacity>
+          <View style={styles.requestButtonItem}>
+            <Text style={styles.requestButton}>AVAILABLE PARKING</Text>
+            </View>
+        </TouchableOpacity>
+    );
+  };
+}
+
+class NavigatorIOSExample extends React.Component {
+  static title = '<NavigatorIOS>';
+  static description = 'iOS navigation capabilities';
+  static external = true;
+
+  render() {
+    const {onExampleExit} = this.props;
+    return (
+      <NavigatorIOS
+        style={styles.container}
+        initialRoute={{
+          title: 'Share Ur Parking',
+          component: App,
+          passProps: {onExampleExit},
+        }}
+        tintColor="#008888"/>
+    );
+  }
+}
 
 const App = (props) => {
   const {
