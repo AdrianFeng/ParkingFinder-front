@@ -1,11 +1,12 @@
 import React, { PropTypes, Component } from 'react'
-import { StyleSheet, View, Text, Image } from 'react-native'
+import { StyleSheet, View, Text, Image, MapView, TextInput, TouchableOpacity, Dimensions} from 'react-native'
 import { connect } from 'react-redux'
 
-import { Menu, MenuButton, MyInfo, History, Help, Settings } from './../../components'
+import { Menu, MenuButton, MyInfo, History, Help, Settings, } from './../../components'
 import * as actions from './actions'
 
 const SideMenu = require('react-native-side-menu');
+const window = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   caption: {
@@ -19,16 +20,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  welcome: {
+  map: {
+    position: 'absolute',
+    top:0,
+    height: window.height*0.87,
+    width:window.width,
+    zIndex:0,
+  },
+  searchBar: {
+    position: 'absolute',
+    top:25,
+    zIndex: 999,
+    paddingLeft: 30,
+    marginLeft: 55,
+    fontSize: 22,
+    height: 40,
+    width:300,
+    flex: 0,
+    borderWidth: 2,
+    borderColor: '#E4E4E4',
+    backgroundColor: '#FFFFFF',
+  },
+  requestButtonItem: {
+    marginTop:window.height*0.87,
+    width:350,
+    height:50,
+    backgroundColor: '#696969',
+  },
+  requestButton: {
     fontSize: 20,
+    fontWeight: 'normal',
+    color:'white',
+    flexDirection: 'row',
+    paddingTop: 10,
     textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  }
 })
 
 const App = (props) => {
@@ -54,19 +80,18 @@ const App = (props) => {
         isOpen={isOpen}
         onChange={(isOpen) => updateMenuState(isOpen)}>
         <View style={styles.container}>
-          <Text style={styles.welcome}>
-            Welcome to React Native!
-          </Text>
-          <Text style={styles.instructions}>
-            This is a working version of side menu with Redux handling states
-          </Text>
-          <Text style={styles.instructions}>
-            Press Cmd+R to reload,{'\n'}
-            Cmd+Control+Z for dev menu
-          </Text>
-          <Text style={styles.instructions}>
-            Current selected menu item is: {selectedItem}
-          </Text>
+        <TextInput
+           style={styles.searchBar}
+           placeholder="Enter Destination" />
+          <MapView
+            style={styles.map}
+            showsUserLocation={true}
+            followUserLocation={true}/>
+        <TouchableOpacity>
+          <View style={styles.requestButtonItem}>
+            <Text style={styles.requestButton}>AVAILABLE PARKING</Text>
+            </View>
+        </TouchableOpacity>
           <MyInfo visible={myInfoVisible} requestClose={closeModal} />
           <History visible={historyVisible} requestClose={closeModal} />
           <Help visible={helpVisible} requestClose={closeModal} />
