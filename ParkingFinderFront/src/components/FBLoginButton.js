@@ -1,10 +1,36 @@
 import React, { PropTypes } from 'react'
-import { StyleSheet, View } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 const FBSDK = require('react-native-fbsdk');
 const {
   LoginButton,
   AccessToken
 } = FBSDK;
+
+const styles = StyleSheet.create({
+  mainViewContainer: {
+    flex: 1, 
+    flexDirection:'column',
+  },
+  mainViewLogoContainer: {
+    flex: 0.85, 
+    alignItems: 'center', 
+    flexDirection: 'column', 
+    justifyContent: 'center'
+  },
+  mainIcon: {
+    width: 60,
+    height: 60,
+    marginBottom: 80,
+  },
+  buttonContainer: {
+    flex: 0.15,
+    backgroundColor: '#F9F9F9',
+    borderTopWidth: 1,
+    borderTopColor: '#979797',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+});
 
 const FBLoginButton = (props) => {
   const {
@@ -12,7 +38,11 @@ const FBLoginButton = (props) => {
   } = props;
 
   return (
-      <View style={styles.loginContainer}>
+    <View style={styles.mainViewContainer}>
+      <View style={styles.mainViewLogoContainer}>
+        <Image style={styles.mainIcon} resizeMode='contain' source={require('./../assets/icon.png')} />
+      </View>
+      <View style={styles.buttonContainer}>
         <LoginButton
           publishPermissions={["publish_actions"]}
           onLoginFinished={
@@ -29,20 +59,10 @@ const FBLoginButton = (props) => {
                 )
               }
             }
-          }
-        />
+          }/>
       </View>
+    </View>
   );
 };
-
-const styles = StyleSheet.create({
-    loginContainer: {
-        paddingTop: 500,
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        bottom: 0,
-    },
-});
 
 export default FBLoginButton;
