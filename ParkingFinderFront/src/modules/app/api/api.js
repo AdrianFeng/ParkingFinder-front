@@ -12,8 +12,8 @@ var ApiUtils = {
   }
 };
 
-// const BASE_URL = "http://ec2-54-210-213-91.compute-1.amazonaws.com:8888";
-const BASE_URL = "http://localhost:8888";
+const BASE_URL = "http://ec2-54-210-213-91.compute-1.amazonaws.com:8888";
+// const BASE_URL = "http://localhost:8888";
 const HEADERS = {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
