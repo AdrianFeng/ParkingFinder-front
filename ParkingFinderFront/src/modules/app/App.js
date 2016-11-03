@@ -69,38 +69,7 @@ class EmptyPage extends React.Component {
   }
 }
 
-class NavigatorIOSExamplePage extends React.Component {
-  render() {
-    var recurseTitle = 'Recurse Navigation';
-    if (!this.props.depth || this.props.depth === 1) {
-      recurseTitle += ' - more examples here';
-    }
-    return (
-          {this._renderRow('Push View Example', () => {
-            this.props.navigator.push({
-              title: 'Very Long Custom View Example Title',
-              component: EmptyPage,
-            });
-          })}
-    );
-  }
-
-  _renderRow = (title: string, onPress: Function) => {
-    return (
-        <TouchableOpacity>
-          <View style={styles.requestButtonItem}>
-            <Text style={styles.requestButton}>AVAILABLE PARKING</Text>
-            </View>
-        </TouchableOpacity>
-    );
-  };
-}
-
 class NavigatorIOSExample extends React.Component {
-  static title = '<NavigatorIOS>';
-  static description = 'iOS navigation capabilities';
-  static external = true;
-
   render() {
     const {onExampleExit} = this.props;
     return (
@@ -116,6 +85,12 @@ class NavigatorIOSExample extends React.Component {
   }
 }
 
+  gotoAvailableParking = props =>  {
+     this.props.navigator.push({
+              title: 'AVAILABLE PARKING',
+              component: EmptyPage,
+            });
+  }
 const App = (props) => {
   const {
     onMenuItemSelected,
@@ -131,6 +106,7 @@ const App = (props) => {
     settingsVisible,
     closeModal,
     openModal,
+    navigator,
   } = props
 
   return (
@@ -146,10 +122,8 @@ const App = (props) => {
             style={styles.map}
             showsUserLocation={true}
             followUserLocation={true}/>
-        <TouchableOpacity>
-          <View style={styles.requestButtonItem}>
+        <TouchableOpacity style={styles.requestButtonItem} onPress={this.gotoAvailableParking}>
             <Text style={styles.requestButton}>AVAILABLE PARKING</Text>
-            </View>
         </TouchableOpacity>
           <MyInfo visible={myInfoVisible} requestClose={closeModal} />
           <History visible={historyVisible} requestClose={closeModal} />
@@ -162,6 +136,8 @@ const App = (props) => {
         </MenuButton>
       </SideMenu>
   )
+  
+
 }
 
 App.displayName = 'App'
