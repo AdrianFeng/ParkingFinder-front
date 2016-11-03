@@ -1,52 +1,63 @@
-import React, { PropTypes } from 'react'
+import React, { PropTypes, Component } from 'react'
 import TextField from 'react-native-md-textinput';
-import { Modal, ScrollView, View, StyleSheet, Text } from 'react-native';
+import { Modal, ListView, View, StyleSheet, Text } from 'react-native';
 import Button from 'apsl-react-native-button';
+import ParkingItem from './ParkingItem'
 
-const AvailableParkingList = (props) => {
+export default class AvailableParkingList extends Component {
+    constructor(props) {
+        super(props);
+    }
 
-    const { visible, requestClose, } = props;
+    componentDidMount() {
+        this.props.loadParkingList();
+    }
 
-    const fields = [
-      'Brand',
-      'Model',
-      'Color',
-      'Year',
-      'Plate'
-    ];
-    const textFields = fields.map((field, index) =>
-        <TextField
-            key={index}
-            label={field}
-            highlightColor={'#00BCD4'}
-            onChangeText={
-              (text) => (onChanged(field, text))
-            }/>
-    );
+    renderRow(dataRow) {
+        return (
+          <ParkingItem
+             address={dataRow.address}
+             distance={dataRow.distance}/>
+        )
+    } 
 
-    return (
-      <Modal
+    renderList() {
+        return (
+            <ListView 
+                style={styles.formContainer}
+                dataSource={this.props.dataSource}
+                renderRow={this.renderRow.bind(this)} />
+        );
+    }
+
+    renderIndicator() {
+        return (
+            <ActivityIndicatorIOS animating={true} color={'#808080'} size={'small'} />
+        );
+    }
+
+    render() {
+        return (
+          <Modal
         animationType='slide'
-        visible={visible}>
+        visible={this.props.visible}>
         <View style={styles.mainViewContainer}>
           <View style={styles.headerContainer}>
             <Text style={styles.headerText}>AVAILABLE PARKING</Text>
           </View>
-          <ScrollView style={styles.formContainer}>
-          </ScrollView>
+            {this.renderList()}
           <View style={styles.footerContainer}>
-          <View style={styles.buttonGroupStyle}>
             <Button
               style={styles.cancelStyle} textStyle={styles.cancelTextStyle}
-              onPress={requestClose}>
+              onPress={this.props.requestClose}>
                 Cancel
             </Button>
           </View>
-          </View>
         </View>
       </Modal>
-    );
-};
+        );
+    }
+}
 
 const styles = StyleSheet.create({
   mainViewContainer: {
@@ -82,29 +93,16 @@ const styles = StyleSheet.create({
   innerContainer: {
     paddingTop: 20
   },
-  formStyle: {
-    padding: 20,
-  },
-  buttonGroupStyle: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
   cancelStyle: {
     borderColor: '#6B6B76',
     backgroundColor: '#6B6B76',
     borderRadius: 4,
     borderWidth: 1,
     width: 350,
-    marginLeft: 5,
-  },
-  submitTextStyle: {
-    color: '#6B6B76',
-    fontFamily: 'Helvetica',
+    marginLeft: 10,
   },
   cancelTextStyle: {
     color: '#F9F9F9',
     fontFamily: 'Helvetica',
   },
 });
-
-export default AvailableParkingList

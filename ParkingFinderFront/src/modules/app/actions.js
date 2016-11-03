@@ -11,6 +11,7 @@ import {
     REGISTERVEHICLE,
     SHOWPARKINGLIST,
     HIDEPARKINGLIST,
+    LOADPARKINGLIST,
 } from './constants'
 import api from './api/api'
 
@@ -136,3 +137,12 @@ export const hideParkingList = () => {
     type: HIDEPARKINGLIST,
   }
 };
+
+export const loadParkingList = () => {
+  return (dispatch) => {
+    setTimeout(() => {
+        dispatch({ type: LOADPARKINGLIST });
+     }, 1000);
+        // fetch().then() => dispatch in promise 
+    }
+}

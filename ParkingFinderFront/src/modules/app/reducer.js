@@ -11,7 +11,22 @@ import {
 	REGISTERVEHICLE,
 	SHOWPARKINGLIST,
 	HIDEPARKINGLIST,
+	LOADPARKINGLIST,
 } from './constants'
+
+
+import React, {
+    ListView
+} from 'react-native';
+
+const defaultParking = [
+                    {address: '10980 wellworth ave', distance: '100ft'},
+                    {address: '10981 wellworth ave', distance: '122ft'},
+                    {address: '10982 wellworth ave', distance: '103ft'},
+                    {address: '10983 wellworth ave', distance: '110ft'},
+                ];
+const defaultDataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+defaultDataSource = defaultDataSource.cloneWithRows(defaultParking);
 
 const initialState = {
 	isOpen: false,
@@ -187,5 +202,13 @@ export default handleActions({
                 user
 			}
 		}
-	}
+	},
+	[LOADPARKINGLIST]: (state, action) => {
+		var dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+        dataSource = dataSource.cloneWithRows(defaultParking);
+        return {
+            ...state,
+            dataSource,
+        }
+	},
 }, initialState)

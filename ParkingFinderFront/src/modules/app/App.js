@@ -145,6 +145,8 @@ const App = (props) => {
     AvailabeParkingListVisible,
     showParkingList,
     hideParkingList,
+    loadParkingList,
+    dataSource,
     user,
     form,
   } = props;
@@ -200,7 +202,9 @@ const App = (props) => {
             />
           <AvailableParkingList
                  visible={AvailabeParkingListVisible}
-                 requestClose={hideParkingList}/>
+                 requestClose={hideParkingList}
+                 loadParkingList={loadParkingList}
+                 dataSource={dataSource}/>
         </View>
         <MenuButton onClick={toggle}>
           <Image
@@ -230,6 +234,7 @@ App.propTypes = {
   helpVisible: PropTypes.bool.isRequired,
   settingsVisible: PropTypes.bool.isRequired,
   AvailabeParkingListVisible: PropTypes.bool.isRequired,
+  loadParkingList: PropTypes.func.isRequired,
   onTextFieldChanged: PropTypes.func.isRequired,
   onRegisterVehicleSubmit: PropTypes.func.isRequired,
   onRegisterVehicleButtonClicked: PropTypes.func.isRequired,
@@ -253,6 +258,7 @@ export default connect(
     user: state.app.user,
     form: state.app.form,
     AvailabeParkingListVisible: state.app.AvailabeParkingListVisible,
+    dataSource:state.app.dataSource,
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
@@ -268,6 +274,7 @@ export default connect(
     onRegisterVehicleSubmit:
         (user, accessToken, data) =>
           actions.onRegisterVehicleSubmit(user.userId, accessToken, data,dispatch),
-    onRegisterVehicleButtonClicked: () => dispatch(actions.openRegisterVehicleForm())
+    onRegisterVehicleButtonClicked: () => dispatch(actions.openRegisterVehicleForm()),
+    loadParkingList: () => dispatch(actions.loadParkingList()),
   })
 )(App)
