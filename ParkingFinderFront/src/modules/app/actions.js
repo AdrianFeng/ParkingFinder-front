@@ -1,4 +1,4 @@
-import { TOGGLE, SELECTMENU, UPDATEMENU, SHOWPARKINGLIST, HIDEPARKINGLIST, OPENMODAL, CLOSEMODAL } from './constants'
+import { TOGGLE, SELECTMENU, UPDATEMENU, SHOWPARKINGLIST, HIDEPARKINGLIST, OPENMODAL, CLOSEMODAL, LOADPARKINGLIST } from './constants'
 
 export const toggleMenu = () => {
   return {
@@ -47,3 +47,14 @@ export const hideParkingList = () => {
     type: HIDEPARKINGLIST,
   }
 }
+
+export const loadParkingList = () => {
+  return (dispatch) => {
+    setTimeout(() => {
+        dispatch({ type: LOADPARKINGLIST });
+     }, 1000);
+        // fetch().then() => dispatch in promise 
+    }
+}
+
+

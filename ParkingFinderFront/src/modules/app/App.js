@@ -119,6 +119,8 @@ const App = (props) => {
     onAvailabeParkingClicked,
     showParkingList,
     hideParkingList,
+    loadParkingList,
+    dataSource,
   } = props
 
   return (
@@ -143,7 +145,9 @@ const App = (props) => {
           <Settings visible={settingsVisible} requestClose={closeModal} />
           <AvailableParkingList
                  visible={AvailabeParkingListVisible}
-                 requestClose={hideParkingList}/>
+                 requestClose={hideParkingList}
+                 loadParkingList={loadParkingList}
+                 dataSource={dataSource}/>
         </View>
         <MenuButton onClick={toggle}>
           <Image
@@ -174,6 +178,7 @@ App.propTypes = {
   helpVisible: PropTypes.bool.isRequired,
   settingsVisible: PropTypes.bool.isRequired,
   AvailabeParkingListVisible: PropTypes.bool.isRequired,
+  loadParkingList: PropTypes.func.isRequired,
 }
 
 export default connect(
@@ -187,6 +192,7 @@ export default connect(
     helpVisible: state.app.helpVisible,
     settingsVisible: state.app.settingsVisible,
     AvailabeParkingListVisible: state.app.AvailabeParkingListVisible,
+    dataSource:state.app.dataSource,
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
@@ -196,5 +202,6 @@ export default connect(
     updateMenuState: (isOpen) => dispatch(actions.updateMenu(isOpen)),
     closeModal: () => dispatch(actions.closeModal()),
     openModal: () => dispatch(actions.openModal()),
+    loadParkingList: () => dispatch(actions.loadParkingList()),
   })
 )(App)
