@@ -29,10 +29,10 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     color: '#6B6B76',
   }
-})
+});
 
 const Menu = (props) => {
-  const { onItemSelected, userName, userUrl, popupModal } = props
+  const { onItemSelected, userName, userUrl, popupModal } = props;
 
   return (
     <View scrollsToTop={false} style={styles.menu}>
@@ -68,15 +68,21 @@ const Menu = (props) => {
           </View>
         </TouchableOpacity>
 
+        <TouchableOpacity onPress={() => {onItemSelected('VEHICLES'), popupModal()}}>
+          <View style={styles.menuItem} onPress={() => onItemSelected('VEHICLES')}>
+            <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuSetting.png')} />
+            <Text style={styles.menuItemText}>VEHICLES</Text>
+          </View>
+        </TouchableOpacity>
     </View>
   )
-}
+};
 
 Menu.propTypes = {
   onItemSelected: PropTypes.func.isRequired,
   userName: PropTypes.string.isRequired,
   userUrl: PropTypes.string.isRequired,
   popupModal: PropTypes.func.isRequired,
-}
+};
 
 export default Menu

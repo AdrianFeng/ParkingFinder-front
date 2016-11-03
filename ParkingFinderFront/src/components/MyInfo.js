@@ -17,17 +17,17 @@ const MyInfo = (props) => {
             <Text>MyInfo</Text>
             <TouchableOpacity
               onPress={requestClose}>
-            <Text>X</Text>
+              <Text>X</Text>
             </TouchableOpacity>
           </View>
         </View>
     </Modal>
   )
-}
+};
 
 MyInfo.PropTypes = {
   visible: PropTypes.bool.isRequired,
   requestClose: PropTypes.func,
-}
+};
 
 export default MyInfo

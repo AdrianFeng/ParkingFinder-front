@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 const FBSDK = require('react-native-fbsdk');
 const {
   LoginButton,
@@ -12,7 +12,7 @@ const FBLoginButton = (props) => {
   } = props;
 
   return (
-      <View>
+      <View style={styles.loginContainer}>
         <LoginButton
           publishPermissions={["publish_actions"]}
           onLoginFinished={
@@ -34,5 +34,15 @@ const FBLoginButton = (props) => {
       </View>
   );
 };
+
+const styles = StyleSheet.create({
+    loginContainer: {
+        paddingTop: 500,
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        bottom: 0,
+    },
+});
 
 export default FBLoginButton;

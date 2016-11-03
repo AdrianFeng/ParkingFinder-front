@@ -6,3 +6,6 @@ export { default as History } from './History'
 export { default as Help } from './Help'
 export { default as Settings } from './Settings'
 export { default as FBLoginButton } from './FBLoginButton'
+export { default as VehicleRegistrationForm} from './RegisterVehicleForm'
+export { default as VehicleList } from './VehicleList'
+

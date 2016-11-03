@@ -68,6 +68,12 @@
 				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 			</dict>
+      <key>ec2-54-210-213-91.compute-1.amazonaws.com</key>
+      <dict>
+        <!--Include to allow HTTP requests-->
+        <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+        <true/>
+      </dict>
 		</dict>
 	</dict>
 </dict>

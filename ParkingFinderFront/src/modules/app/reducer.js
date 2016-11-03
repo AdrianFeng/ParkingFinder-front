@@ -1,5 +1,15 @@
 import { handleActions } from 'redux-actions'
-import { TOGGLE, SELECTMENU, UPDATEMENU, OPENMODAL, CLOSEMODAL, FBLOGIN } from './constants'
+import {
+	TOGGLE,
+	SELECTMENU,
+	UPDATEMENU,
+	OPENMODAL,
+	CLOSEMODAL,
+	FBLOGIN,
+	OPENREGISTERVEHICLEFORM,
+	UPDATEFORMFIELD,
+	REGISTERVEHICLE,
+} from './constants'
 
 const initialState = {
 	isOpen: false,
@@ -10,7 +20,9 @@ const initialState = {
 	historyVisible: false,
     helpVisible: false,
     settingsVisible: false,
-}
+	registerVehicleVisible: false,
+    vehicleListVisible: false,
+};
 
 export default handleActions({
 	[TOGGLE]: (state, action) => {
@@ -48,30 +60,35 @@ export default handleActions({
 				return {
 					...state,
 					myInfoVisible: true
-				}
+				};
 				break;
 			case "HISTORY": 
 				return {
 					...state,
 					historyVisible: true
-				}
+				};
 				break;
 			case "HELP": 
 				return {
 					...state,
 					helpVisible: true
-				}
+				};
 				break;
 			case "SETTINGS": 
 				return {
 					...state,
 					settingsVisible: true
-				}
+				};
 				break;
-			default: 
+			case "VEHICLES":
 				return {
 					...state,
-				}
+					vehicleListVisible: true
+				};
+			default:
+				return {
+					...state,
+				};
 				break;
 		}
 	},
@@ -82,6 +99,8 @@ export default handleActions({
 			historyVisible: false,
 			helpVisible: false,
 			settingsVisible: false,
+			registerVehicleVisible: false,
+            vehicleListVisible: false,
 			selectedItem: "default",
 		}
 	},
@@ -94,10 +113,63 @@ export default handleActions({
 				accessToken: null,
 			}
 		} else {
+			let registerVehicleVisible = false;
+            if (!payload.user.ownedVehicles) {
+                registerVehicleVisible = true;
+			}
+
 			return {
 				...state,
 				accessToken: payload.accessToken,
-				user: payload.user
+				user: payload.user,
+				registerVehicleVisible
+			}
+		}
+	},
+	[OPENREGISTERVEHICLEFORM]: (state, action) => {
+        return {
+			...state,
+			myInfoVisible: false,
+			historyVisible: false,
+			helpVisible: false,
+			settingsVisible: false,
+			registerVehicleVisible: true,
+			vehicleListVisible: false,
+		}
+	},
+	[UPDATEFORMFIELD]: (state, action) => {
+        const fields = state.form || {};
+		const {
+			key,
+			value
+		} = action.payload;
+        fields[key.toLowerCase()] = value;
+
+		return {
+			...state,
+			form: fields,
+		}
+	},
+	[REGISTERVEHICLE]: (state, action) => {
+		if (action.error) {
+			alert(state.error);
+			return {
+				...state,
+			}
+		} else {
+			const ownedVehicles = state.user.ownedVehicles || [];
+			if (action.payload.vehicle) {
+				ownedVehicles.push(action.payload.vehicle);
+			}
+			const user = Object.assign(state.user, {
+				ownedVehicles
+			});
+			return {
+				...state,
+				form: null,
+				registerVehicleVisible: false,
+                vehicleListVisible: true,
+                user
 			}
 		}
 	}

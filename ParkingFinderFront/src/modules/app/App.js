@@ -2,8 +2,23 @@ import React, { PropTypes, Component } from 'react'
 import { StyleSheet, View, Text, Image, MapView, TextInput, TouchableOpacity, Dimensions, NavigatorIOS,} from 'react-native'
 import { connect } from 'react-redux'
 
-import { Menu, MenuButton, MyInfo, History, Help, Settings, FBLoginButton } from './../../components'
+import {
+    Menu,
+    MenuButton,
+    Map,
+    MyInfo,
+    History,
+    Help,
+    Settings,
+    FBLoginButton,
+    Form,
+    VehicleRegistrationForm,
+    VehicleList,
+} from './../../components';
 import * as actions from './actions'
+
+const FBSDK = require('react-native-fbsdk');
+const { LoginManager } = FBSDK;
 
 const SideMenu = require('react-native-side-menu');
 const window = Dimensions.get('window');
@@ -104,20 +119,42 @@ const App = (props) => {
     historyVisible,
     helpVisible,
     settingsVisible,
+    registerVehicleVisible,
+    vehicleListVisible,
     closeModal,
     openModal,
     navigator,
     accessToken,
     onFBLogin,
+    onLogout,
+    onTextFieldChanged,
+    onRegisterVehicleSubmit,
+    onVehicleListEntryClicked,
+    onRegisterVehicleButtonClicked,
+
+    user,
+    form,
   } = props;
 
   if (!accessToken) {
+    LoginManager.logOut();
     return (<FBLoginButton onFBLogin={onFBLogin}/>);
+
+  }
+
+  if (user && !user.activated) {
+    // user have to activate current using vehicle
   }
 
   return (
       <SideMenu
-        menu={<Menu onItemSelected={onMenuItemSelected} userName={name} userUrl={url} popupModal={openModal}/>}
+        menu={<Menu
+            onItemSelected={onMenuItemSelected}
+            userName={user.firstName + ' ' + user.lastName}
+            userUrl={user.profilePictureUrl}
+            popupModal={openModal}
+            onLogout={() => onLogout(accessToken)}
+        />}
         isOpen={isOpen}
         onChange={(isOpen) => updateMenuState(isOpen)}>
         <View style={styles.container}>
@@ -131,20 +168,31 @@ const App = (props) => {
         <TouchableOpacity style={styles.requestButtonItem} onPress={this.gotoAvailableParking}>
             <Text style={styles.requestButton}>AVAILABLE PARKING</Text>
         </TouchableOpacity>
-          <MyInfo visible={myInfoVisible} requestClose={closeModal} />
-          <History visible={historyVisible} requestClose={closeModal} />
-          <Help visible={helpVisible} requestClose={closeModal} />
-          <Settings visible={settingsVisible} requestClose={closeModal} />
+            <MyInfo visible={myInfoVisible} requestClose={closeModal} />
+            <History visible={historyVisible} requestClose={closeModal} />
+            <Help visible={helpVisible} requestClose={closeModal} />
+            <Settings visible={settingsVisible} requestClose={closeModal} />
+            <VehicleRegistrationForm
+                visible={registerVehicleVisible}
+                onChanged={onTextFieldChanged}
+                onSubmit={() => onRegisterVehicleSubmit(user, accessToken, form)}
+                requestClose={closeModal}
+            />
+            <VehicleList
+                visible={vehicleListVisible}
+                vehicles={user.ownedVehicles}
+                onEntryClicked={onVehicleListEntryClicked}
+                requestClose={closeModal}
+                onClicked={onRegisterVehicleButtonClicked}
+            />
         </View>
         <MenuButton onClick={toggle}>
           <Image
               source={require('./../../assets/menu.png')} style={{width: 32, height: 32}} />
         </MenuButton>
       </SideMenu>
-  )
-  
-
-}
+  );
+};
 
 App.displayName = 'App';
 
@@ -163,7 +211,12 @@ App.propTypes = {
   historyVisible: PropTypes.bool.isRequired,
   helpVisible: PropTypes.bool.isRequired,
   settingsVisible: PropTypes.bool.isRequired,
-}
+  onTextFieldChanged: PropTypes.func.isRequired,
+  onRegisterVehicleSubmit: PropTypes.func.isRequired,
+  onRegisterVehicleButtonClicked: PropTypes.func.isRequired,
+  user: PropTypes.object,
+  form: PropTypes.object,
+};
 
 export default connect(
   (state) => ({
@@ -175,7 +228,11 @@ export default connect(
     historyVisible: state.app.historyVisible,
     helpVisible: state.app.helpVisible,
     settingsVisible: state.app.settingsVisible,
+    vehicleListVisible: state.app.vehicleListVisible,
+    registerVehicleVisible: state.app.registerVehicleVisible,
     accessToken: state.app.accessToken,
+    user: state.app.user,
+    form: state.app.form,
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
@@ -183,6 +240,12 @@ export default connect(
     updateMenuState: (isOpen) => dispatch(actions.updateMenu(isOpen)),
     closeModal: () => dispatch(actions.closeModal()),
     openModal: () => dispatch(actions.openModal()),
-    onFBLogin: (accessToken) => actions.onFBLogin(accessToken, dispatch)
+    onFBLogin: (accessToken) => actions.onFBLogin(accessToken, dispatch),
+    onLogout: (accessToken) => actions.onLogout(accessToken, dispatch),
+    onTextFieldChanged: (key, value) => actions.onTextFieldChanged(key, value, dispatch),
+    onRegisterVehicleSubmit:
+        (user, accessToken, data) =>
+          actions.onRegisterVehicleSubmit(user.userId, accessToken, data,dispatch),
+    onRegisterVehicleButtonClicked: () => dispatch(actions.openRegisterVehicleForm())
   })
 )(App)
