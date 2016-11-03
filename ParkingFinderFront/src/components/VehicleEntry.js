@@ -10,47 +10,39 @@ const VehicleEntry = (props) => {
     } = props;
 
     return (
-        <View style={{padding: 10}}>
-            <View style={{
-                flex:1,
-                flexDirection: 'row',
-                padding: 10,
-                borderRadius: 0,
-                borderWidth: 3,
-            }}>
-                <View style={{flex: 0.8, flexDirection: 'column'}}>
-                    <View style={{flex: 0.5}}>
+        <View style={styles.mainContainer}>
+                <View style={{flex: 0.6, flexDirection: 'column'}}>
+                    <View style={{flex: 0.4, justifyContent: 'center', alignItems: 'center', marginTop: 5}}>
                         <Text style={styles.plateText}>
                             {vehicle.plate}
                         </Text>
                     </View>
-                    <View style={{flex: 0.5}}>
+                    <View style={{flex: 0.6}}>
                         <View style={{flex: 0.5, flexDirection: 'row'}}>
-                            <View style={{flex: 0.5}}>
-                                <Text>{vehicle.brand}</Text>
+                            <View style={styles.innerTextContainer}>
+                                <Text style={styles.innerText}>{vehicle.brand}</Text>
                             </View>
-                            <View style={{flex: 0.5}}>
-                                <Text>{vehicle.model}</Text>
+                            <View style={styles.innerTextContainer}>
+                                <Text style={styles.innerText}>{vehicle.model}</Text>
                             </View>
                         </View>
                         <View style={{flex: 0.5, flexDirection: 'row'}}>
-                            <View style={{flex: 0.5}}>
-                                <Text>{vehicle.color}</Text>
+                            <View style={styles.innerTextContainer}>
+                                <Text style={styles.innerText}>{vehicle.color}</Text>
                             </View>
-                            <View style={{flex: 0.5}}>
-                                <Text>{vehicle.year}</Text>
+                            <View style={styles.innerTextContainer}>
+                                <Text style={styles.innerText}>{vehicle.year}</Text>
                             </View>
                         </View>
                     </View>
                 </View>
-                <View style={{flex: 0.2, justifyContent: 'center'}}>
+                <View style={styles.buttonContainer}>
                     <Button
                         style={styles.vehicleActivateButtonStyle} textStyle={styles.vehicleActivateTextStyle}
                         onPress={activatedVehiclePlate}>
                         Activate
                     </Button>
                 </View>
-            </View>
         </View>
     );
 }
@@ -61,26 +53,56 @@ VehicleEntry.propTypes = {
 }
 
 const styles = StyleSheet.create({
+    mainContainer: {
+        margin: 10,
+        height: 120,
+        flexDirection: 'column',
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: '#6B6B76',
+        shadowColor: "#6B6B76",
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        shadowOffset: {
+            height: 1,
+            width: 0
+        }
+    },
+    buttonContainer: {
+        flex: 0.4, 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        borderTopWidth: 1,
+        borderTopColor: '#B2B2BA',
+    },
     vehicleActivateButtonStyle: {
-        padding: 2,
         flex: 1,
-        borderColor: 'black',
         backgroundColor: 'white',
         borderRadius: 0,
         borderWidth: 0,
-        width: 65,
-        height: 50,
+        marginTop: 10
     },
     vehicleActivateTextStyle: {
-        color: 'black',
-        fontFamily: 'Avenir',
+        color: '#6B6B76',
+        fontFamily: 'Helvetica',
         fontWeight: 'bold'
     },
     plateText: {
-        flex: 1,
+        color: '#3A3A48',
+        fontFamily: 'Helvetica',
         fontSize: 20,
         fontWeight: 'bold',
+        flex: 1
     },
+    innerTextContainer: {
+        flex: 0.5, 
+        justifyContent: 'center', 
+        alignItems: 'center',
+    },
+    innerText: {
+        color: '#6B6B76',
+        fontFamily: 'Helvetica'
+    }
 });
 
 export default VehicleEntry

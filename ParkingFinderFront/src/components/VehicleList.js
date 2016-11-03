@@ -20,44 +20,74 @@ const VehicleList = (props) => {
         <Modal
           animationType='slide'
           visible={visible}>
-            <View style={[styles.container]}>
-              <View style={[styles.innerContainer]}>
+          <View style={styles.mainViewContainer}>
+              <View style={styles.headerContainer}>
                 <TouchableOpacity
+                  style={styles.cancel}
                   onPress={requestClose}>
-                  <Text>X</Text>
+                  <Text style={styles.cancelText}>X</Text>
                 </TouchableOpacity>
-                <ScrollView>
-                  {components}
-                  <View style={{padding:10}}>
-                      <Button
-                        style={styles.registerStyle} textStyle={styles.registerTextStyle}
-                        onPress={onClicked}>
-                        Register New Vehicle
-                      </Button>
-                  </View>
-
-                </ScrollView>
+                <Text style={styles.headerText}>YOUR VEHICLES</Text>
               </View>
-            </View>
+              <ScrollView style={styles.infoContainer}>
+                {components}
+                <View style={{padding:10}}>
+                    <Button
+                      style={styles.registerStyle} textStyle={styles.registerTextStyle}
+                      onPress={onClicked}>
+                      Register New Vehicle
+                    </Button>
+                </View>
+              </ScrollView>
+          </View>
         </Modal>
     );
 };
 
 const styles = StyleSheet.create({
+    mainViewContainer: {
+      flex: 1, 
+      flexDirection:'column',
+    },
+    headerContainer: {
+      flex: 0.1,
+      backgroundColor: '#F9F9F9',
+      borderBottomWidth: 1,
+      borderBottomColor: '#B2B2BA',
+      alignItems: 'center', 
+      flexDirection: 'row', 
+      justifyContent: 'center',
+    },
+    headerText: {
+      fontFamily: 'Helvetica',
+      fontSize: 18,
+      fontWeight: '200',
+      marginTop: 15
+    },
+    cancel: {
+      position: 'absolute',
+      left: 20,
+      top: 28,
+    },
+    cancelText: {
+      fontFamily: 'Helvetica',
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
     innerContainer: {
         paddingTop: 20
     },
     registerStyle: {
         padding: 10,
         flex: 1,
-        borderColor: 'black',
-        backgroundColor: 'white',
-        borderRadius: 0,
-        borderWidth: 3,
+        borderColor: '#6B6B76',
+        backgroundColor: '#6B6B76',
+        borderRadius: 4,
+        borderWidth: 1,
     },
     registerTextStyle: {
-        color: 'black',
-        fontFamily: 'Avenir',
+        color: 'white',
+        fontFamily: 'Helvetica',
         fontWeight: 'bold'
     },
 });
