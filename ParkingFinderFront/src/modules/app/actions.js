@@ -9,6 +9,8 @@ import {
     OPENREGISTERVEHICLEFORM,
     UPDATEFORMFIELD,
     REGISTERVEHICLE,
+    SHOWPARKINGLIST,
+    HIDEPARKINGLIST,
 } from './constants'
 import api from './api/api'
 
@@ -123,3 +125,14 @@ export const onRegisterVehicleSubmit = (userId, accessToken, data, dispatch) => 
     }
 };
 
+export const showParkingList = () => {
+  return {
+    type: SHOWPARKINGLIST,
+  }
+};
+
+export const hideParkingList = () => {
+  return {
+    type: HIDEPARKINGLIST,
+  }
+};

@@ -9,6 +9,8 @@ import {
 	OPENREGISTERVEHICLEFORM,
 	UPDATEFORMFIELD,
 	REGISTERVEHICLE,
+	SHOWPARKINGLIST,
+	HIDEPARKINGLIST,
 } from './constants'
 
 const initialState = {
@@ -22,7 +24,9 @@ const initialState = {
     settingsVisible: false,
 	registerVehicleVisible: false,
     vehicleListVisible: false,
+    AvailabeParkingListVisible: false,
 };
+}
 
 export default handleActions({
 	[TOGGLE]: (state, action) => {
@@ -90,6 +94,18 @@ export default handleActions({
 					...state,
 				};
 				break;
+		}
+	},
+	[SHOWPARKINGLIST]: (state, action) => {
+		return {
+			...state,
+			AvailabeParkingListVisible: true
+		}
+	},
+	[HIDEPARKINGLIST]: (state, action) => {
+		return {
+			...state,
+			AvailabeParkingListVisible: false
 		}
 	},
 	[CLOSEMODAL]: (state, action) => {

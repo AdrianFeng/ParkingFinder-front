@@ -14,7 +14,9 @@ import {
     Form,
     VehicleRegistrationForm,
     VehicleList,
+    AvailableParkingList,
 } from './../../components';
+
 import * as actions from './actions'
 
 const FBSDK = require('react-native-fbsdk');
@@ -69,7 +71,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 10,
     textAlign: 'center',
-  }
+  },
+  emptyPage: {
+    flex: 1,
+    paddingTop: 64,
+  },
+  emptyPageText: {
+    margin: 10,
+  },
 })
 
 class EmptyPage extends React.Component {
@@ -93,7 +102,9 @@ class NavigatorIOSExample extends React.Component {
         initialRoute={{
           title: 'Share Ur Parking',
           component: App,
-          passProps: {onExampleExit},
+          passProps: {
+            text: 'This is a empty page',
+          },
         }}
         tintColor="#008888"/>
     );
@@ -131,7 +142,9 @@ const App = (props) => {
     onRegisterVehicleSubmit,
     onVehicleListEntryClicked,
     onRegisterVehicleButtonClicked,
-
+    AvailabeParkingListVisible,
+    showParkingList,
+    hideParkingList,
     user,
     form,
   } = props;
@@ -165,7 +178,7 @@ const App = (props) => {
             style={styles.map}
             showsUserLocation={true}
             followUserLocation={true}/>
-        <TouchableOpacity style={styles.requestButtonItem} onPress={this.gotoAvailableParking}>
+        <TouchableOpacity style={styles.requestButtonItem} onPress={showParkingList}>
             <Text style={styles.requestButton}>AVAILABLE PARKING</Text>
         </TouchableOpacity>
             <MyInfo visible={myInfoVisible} requestClose={closeModal} />
@@ -185,6 +198,9 @@ const App = (props) => {
                 requestClose={closeModal}
                 onClicked={onRegisterVehicleButtonClicked}
             />
+          <AvailableParkingList
+                 visible={AvailabeParkingListVisible}
+                 requestClose={hideParkingList}/>
         </View>
         <MenuButton onClick={toggle}>
           <Image
@@ -205,12 +221,15 @@ App.propTypes = {
   selectedItem: PropTypes.string.isRequired,
   toggle: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
+  showParkingList: PropTypes.func.isRequired,
+  hideParkingList: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
   onFBLogin: PropTypes.func.isRequired,
   myInfoVisible: PropTypes.bool.isRequired,
   historyVisible: PropTypes.bool.isRequired,
   helpVisible: PropTypes.bool.isRequired,
   settingsVisible: PropTypes.bool.isRequired,
+  AvailabeParkingListVisible: PropTypes.bool.isRequired,
   onTextFieldChanged: PropTypes.func.isRequired,
   onRegisterVehicleSubmit: PropTypes.func.isRequired,
   onRegisterVehicleButtonClicked: PropTypes.func.isRequired,
@@ -233,9 +252,12 @@ export default connect(
     accessToken: state.app.accessToken,
     user: state.app.user,
     form: state.app.form,
+    AvailabeParkingListVisible: state.app.AvailabeParkingListVisible,
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
+    showParkingList: () => dispatch(actions.showParkingList()),
+    hideParkingList: () => dispatch(actions.hideParkingList()),
     onMenuItemSelected: (item) => dispatch(actions.selectMenu(item)),
     updateMenuState: (isOpen) => dispatch(actions.updateMenu(isOpen)),
     closeModal: () => dispatch(actions.closeModal()),
