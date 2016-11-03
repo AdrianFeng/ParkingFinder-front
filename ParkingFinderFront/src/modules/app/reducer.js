@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import { TOGGLE, SELECTMENU, UPDATEMENU, OPENMODAL, CLOSEMODAL } from './constants'
+import { TOGGLE, SELECTMENU, UPDATEMENU, OPENMODAL, CLOSEMODAL, SHOWPARKINGLIST, HIDEPARKINGLIST } from './constants'
 
 const initialState = {
 	isOpen: false,
@@ -10,6 +10,7 @@ const initialState = {
 	historyVisible: false,
     helpVisible: false,
     settingsVisible: false,
+    AvailabeParkingListVisible: false,
 }
 
 export default handleActions({
@@ -73,6 +74,18 @@ export default handleActions({
 					...state,
 				}
 				break;
+		}
+	},
+	[SHOWPARKINGLIST]: (state, action) => {
+		return {
+			...state,
+			AvailabeParkingListVisible: true
+		}
+	},
+	[HIDEPARKINGLIST]: (state, action) => {
+		return {
+			...state,
+			AvailabeParkingListVisible: false
 		}
 	},
 	[CLOSEMODAL]: (state, action) => {

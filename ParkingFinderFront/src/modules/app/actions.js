@@ -1,4 +1,4 @@
-import { TOGGLE, SELECTMENU, UPDATEMENU, OPENMODAL, CLOSEMODAL } from './constants'
+import { TOGGLE, SELECTMENU, UPDATEMENU, SHOWPARKINGLIST, HIDEPARKINGLIST, OPENMODAL, CLOSEMODAL } from './constants'
 
 export const toggleMenu = () => {
   return {
@@ -33,5 +33,17 @@ export const closeModal = () => {
 export const openModal = () => {
   return {
     type: OPENMODAL,
+  }
+}
+
+export const showParkingList = () => {
+  return {
+    type: SHOWPARKINGLIST,
+  }
+}
+
+export const hideParkingList = () => {
+  return {
+    type: HIDEPARKINGLIST,
   }
 }

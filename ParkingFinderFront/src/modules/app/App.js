@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react'
 import { StyleSheet, View, Text, Image, MapView, TextInput, TouchableOpacity, Dimensions, NavigatorIOS,} from 'react-native'
 import { connect } from 'react-redux'
 
-import { Menu, MenuButton, MyInfo, History, Help, Settings, } from './../../components'
+import { Menu, MenuButton, MyInfo, History, Help, Settings, AvailableParkingList} from './../../components'
 import * as actions from './actions'
 
 const SideMenu = require('react-native-side-menu');
@@ -54,7 +54,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 10,
     textAlign: 'center',
-  }
+  },
+  emptyPage: {
+    flex: 1,
+    paddingTop: 64,
+  },
+  emptyPageText: {
+    margin: 10,
+  },
 })
 
 class EmptyPage extends React.Component {
@@ -78,7 +85,9 @@ class NavigatorIOSExample extends React.Component {
         initialRoute={{
           title: 'Share Ur Parking',
           component: App,
-          passProps: {onExampleExit},
+          passProps: {
+            text: 'This is a empty page',
+          },
         }}
         tintColor="#008888"/>
     );
@@ -104,9 +113,12 @@ const App = (props) => {
     historyVisible,
     helpVisible,
     settingsVisible,
+    AvailabeParkingListVisible,
     closeModal,
     openModal,
-    navigator,
+    onAvailabeParkingClicked,
+    showParkingList,
+    hideParkingList,
   } = props
 
   return (
@@ -122,13 +134,16 @@ const App = (props) => {
             style={styles.map}
             showsUserLocation={true}
             followUserLocation={true}/>
-        <TouchableOpacity style={styles.requestButtonItem} onPress={this.gotoAvailableParking}>
+        <TouchableOpacity style={styles.requestButtonItem} onPress={showParkingList}>
             <Text style={styles.requestButton}>AVAILABLE PARKING</Text>
         </TouchableOpacity>
           <MyInfo visible={myInfoVisible} requestClose={closeModal} />
           <History visible={historyVisible} requestClose={closeModal} />
           <Help visible={helpVisible} requestClose={closeModal} />
           <Settings visible={settingsVisible} requestClose={closeModal} />
+          <AvailableParkingList
+                 visible={AvailabeParkingListVisible}
+                 requestClose={hideParkingList}/>
         </View>
         <MenuButton onClick={toggle}>
           <Image
@@ -151,11 +166,14 @@ App.propTypes = {
   selectedItem: PropTypes.string.isRequired,
   toggle: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
+  showParkingList: PropTypes.func.isRequired,
+  hideParkingList: PropTypes.func.isRequired,
   openModal: PropTypes.func.isRequired,
   myInfoVisible: PropTypes.bool.isRequired,
   historyVisible: PropTypes.bool.isRequired,
   helpVisible: PropTypes.bool.isRequired,
   settingsVisible: PropTypes.bool.isRequired,
+  AvailabeParkingListVisible: PropTypes.bool.isRequired,
 }
 
 export default connect(
@@ -168,9 +186,12 @@ export default connect(
     historyVisible: state.app.historyVisible,
     helpVisible: state.app.helpVisible,
     settingsVisible: state.app.settingsVisible,
+    AvailabeParkingListVisible: state.app.AvailabeParkingListVisible,
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
+    showParkingList: () => dispatch(actions.showParkingList()),
+    hideParkingList: () => dispatch(actions.hideParkingList()),
     onMenuItemSelected: (item) => dispatch(actions.selectMenu(item)),
     updateMenuState: (isOpen) => dispatch(actions.updateMenu(isOpen)),
     closeModal: () => dispatch(actions.closeModal()),
