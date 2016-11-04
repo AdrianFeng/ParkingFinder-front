@@ -28,6 +28,7 @@ const ParkingItem = (props) => {
     zoomEnabled={false}
     scrollEnabled ={false}
     showsUserLocation={true}
+    followUserLocation={true}
     region={region}
     annotations={annotation}/>
     <View style={styles.textViewContainer}>
