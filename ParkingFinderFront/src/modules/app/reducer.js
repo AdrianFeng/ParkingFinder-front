@@ -26,7 +26,6 @@ const initialState = {
     vehicleListVisible: false,
     AvailabeParkingListVisible: false,
 };
-}
 
 export default handleActions({
 	[TOGGLE]: (state, action) => {
