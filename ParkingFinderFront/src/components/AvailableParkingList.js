@@ -5,58 +5,60 @@ import Button from 'apsl-react-native-button';
 import ParkingItem from './ParkingItem'
 
 export default class AvailableParkingList extends Component {
-    constructor(props) {
-        super(props);
-    }
+  constructor(props) {
+    super(props);
+  }
 
-    componentDidMount() {
-        this.props.loadParkingList();
-    }
+  componentDidMount() {
+    this.props.loadParkingList();
+  }
 
-    renderRow(dataRow) {
-        return (
-          <ParkingItem
-             address={dataRow.address}
-             distance={dataRow.distance}/>
-        )
-    } 
+  renderRow(dataRow) {
+    return (
+      <ParkingItem
+      address={dataRow.address}
+      distance={dataRow.distance}
+      longitude={dataRow.longitude}
+      latitude = {dataRow.latitude}/>
+      )
+  } 
 
-    renderList() {
-        return (
-            <ListView 
-                style={styles.formContainer}
-                dataSource={this.props.dataSource}
-                renderRow={this.renderRow.bind(this)} />
-        );
-    }
+  renderList() {
+    return (
+      <ListView 
+      style={styles.formContainer}
+      dataSource={this.props.dataSource}
+      renderRow={this.renderRow.bind(this)} />
+      );
+  }
 
-    renderIndicator() {
-        return (
-            <ActivityIndicatorIOS animating={true} color={'#808080'} size={'small'} />
-        );
-    }
+  renderIndicator() {
+    return (
+      <ActivityIndicatorIOS animating={true} color={'#808080'} size={'small'} />
+      );
+  }
 
-    render() {
-        return (
-          <Modal
-        animationType='slide'
-        visible={this.props.visible}>
-        <View style={styles.mainViewContainer}>
-          <View style={styles.headerContainer}>
-            <Text style={styles.headerText}>AVAILABLE PARKING</Text>
-          </View>
-            {this.renderList()}
-          <View style={styles.footerContainer}>
-            <Button
-              style={styles.cancelStyle} textStyle={styles.cancelTextStyle}
-              onPress={this.props.requestClose}>
-                Cancel
-            </Button>
-          </View>
-        </View>
+  render() {
+    return (
+      <Modal
+      animationType='slide'
+      visible={this.props.visible}>
+      <View style={styles.mainViewContainer}>
+      <View style={styles.headerContainer}>
+      <Text style={styles.headerText}>AVAILABLE PARKING</Text>
+      </View>
+      {this.renderList()}
+      <View style={styles.footerContainer}>
+      <Button
+      style={styles.cancelStyle} textStyle={styles.cancelTextStyle}
+      onPress={this.props.requestClose}>
+      Cancel
+      </Button>
+      </View>
+      </View>
       </Modal>
-        );
-    }
+      );
+  }
 }
 
 const styles = StyleSheet.create({
