@@ -5,10 +5,10 @@ import React, {
 } from 'react-native';
 
 const defaultParking = [
-                    {address: '10980 wellworth ave', distance: '100ft'},
-                    {address: '10981 wellworth ave', distance: '122ft'},
-                    {address: '10982 wellworth ave', distance: '103ft'},
-                    {address: '10983 wellworth ave', distance: '110ft'},
+                    {address: '10980 Wellworth ave', distance: '100 ft', longitude: '32.47', latitude: '-107.85'},
+                    {address: '10981 Whilshire ave', distance: '122 ft', longitude: '33.47', latitude: '-104.85'},
+                    {address: '10982 Westwood Plaza', distance: '1 mile', longitude: '34.47', latitude: '-107.85'},
+                    {address: '10983 Ohio Street', distance: '1.5 mile', longitude: '35.47', latitude: '-102.85'},
                 ];
 const defaultDataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 defaultDataSource = defaultDataSource.cloneWithRows(defaultParking);

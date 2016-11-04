@@ -1,23 +1,41 @@
 import React, { PropTypes } from 'react'
 import TextField from 'react-native-md-textinput';
-import { Modal, ScrollView, View, StyleSheet, Text, MapView } from 'react-native';
+import { Image, Modal, ScrollView, View, StyleSheet, Text, MapView } from 'react-native';
 import Button from 'apsl-react-native-button';
 
 const ParkingItem = (props) => {
 
-    const { longtitude, latitude, address, distance , selectItem } = props;
+  const { longitude, latitude, address, distance , selectItem } = props;
+  var region = {
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude),
+        latitudeDelta: parseFloat('0.2f'),
+        longitudeDelta: parseFloat('0.2f'),
+      };
+  var annotation = 
+  [{
+    longitude: region.longitude,
+    latitude: region.latitude,
+    view: <Image
+            style={{width: 90, height: 65, resizeMode: 'cover'}}
+            source={require('./../assets/pin-in-the-map-red.png')}/>,
+  }];
 
-    return (
-		<View style={styles.mainViewContainer}>
-          <MapView
-            style={styles.map}
-            showsUserLocation={true}
-            followUserLocation={true}/>
-		<View style={styles.textViewContainer}>
-            <Text style={styles.textStyle}>{address}</Text>
-            <Text style={styles.textStyle}>{distance}</Text>
-		</View>
-          </View>
+  return (
+    <View style={styles.mainViewContainer}>
+    <MapView
+    style={styles.map}
+    zoomEnabled={false}
+    scrollEnabled ={false}
+    showsUserLocation={true}
+    followUserLocation={true}
+    region={region}
+    annotations={annotation}/>
+    <View style={styles.textViewContainer}>
+    <Text style={styles.textStyle}>{address}</Text>
+    <Text style={styles.textStyle}>{distance}</Text>
+    </View>
+    </View>
     );
 
 

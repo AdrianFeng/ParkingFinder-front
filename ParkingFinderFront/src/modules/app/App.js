@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import { StyleSheet, View, Text, Image, MapView, TextInput, TouchableOpacity, Dimensions, NavigatorIOS,} from 'react-native'
+import { StyleSheet, View, Text, Image, MapView, TextInput, TouchableOpacity, Dimensions,} from 'react-native'
 import { connect } from 'react-redux'
 
 import { Menu, MenuButton, MyInfo, History, Help, Settings, AvailableParkingList} from './../../components'
@@ -64,42 +64,6 @@ const styles = StyleSheet.create({
   },
 })
 
-class EmptyPage extends React.Component {
-  render() {
-    return (
-      <View style={styles.emptyPage}>
-        <Text style={styles.emptyPageText}>
-          {this.props.text}
-        </Text>
-      </View>
-    );
-  }
-}
-
-class NavigatorIOSExample extends React.Component {
-  render() {
-    const {onExampleExit} = this.props;
-    return (
-      <NavigatorIOS
-        style={styles.container}
-        initialRoute={{
-          title: 'Share Ur Parking',
-          component: App,
-          passProps: {
-            text: 'This is a empty page',
-          },
-        }}
-        tintColor="#008888"/>
-    );
-  }
-}
-
-  gotoAvailableParking = props =>  {
-     this.props.navigator.push({
-              title: 'AVAILABLE PARKING',
-              component: EmptyPage,
-            });
-  }
 const App = (props) => {
   const {
     onMenuItemSelected,
