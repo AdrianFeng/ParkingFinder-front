@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '300',
     color: '#6B6B76',
+    fontFamily: 'Helvetica',
   }
 });
 
@@ -54,13 +55,6 @@ const Menu = (props) => {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => {onItemSelected('HELP'), popupModal()}}>
-          <View style={styles.menuItem} onPress={() => onItemSelected('HELP')}>
-            <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuHelp.png')} />
-            <Text style={styles.menuItemText}>HELP</Text>
-          </View>
-        </TouchableOpacity>
-
         <TouchableOpacity onPress={() => {onItemSelected('SETTINGS'), popupModal()}}>
           <View style={styles.menuItem} onPress={() => onItemSelected('SETTINGS')}>
             <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuSetting.png')} />
@@ -70,8 +64,15 @@ const Menu = (props) => {
 
         <TouchableOpacity onPress={() => {onItemSelected('VEHICLES'), popupModal()}}>
           <View style={styles.menuItem} onPress={() => onItemSelected('VEHICLES')}>
-            <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuSetting.png')} />
+            <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuCars.png')} />
             <Text style={styles.menuItemText}>VEHICLES</Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => {onItemSelected('HELP'), popupModal()}}>
+          <View style={styles.menuItem} onPress={() => onItemSelected('HELP')}>
+            <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuHelp.png')} />
+            <Text style={styles.menuItemText}>HELP</Text>
           </View>
         </TouchableOpacity>
     </View>

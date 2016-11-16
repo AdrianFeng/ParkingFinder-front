@@ -172,7 +172,7 @@ const App = (props) => {
         </View>
         <MenuButton onClick={toggle}>
           <Image
-              source={require('./../../assets/menu.png')} style={{width: 32, height: 32}} />
+              source={require('./../../assets/menu.png')} resizeMode='contain' style={{width: 32, height: 32}} />
         </MenuButton>
       </SideMenu>
   );
