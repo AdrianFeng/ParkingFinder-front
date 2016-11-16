@@ -79,7 +79,37 @@ const styles = StyleSheet.create({
   emptyPageText: {
     margin: 10,
   },
+  mask: {
+    position: 'absolute',
+    top:0,
+    height: window.height,
+    width:window.width,
+    backgroundColor: 'black',
+    opacity: 0.5,
+    zIndex:1000000,
+  },
+  noMask: {
+    position: 'absolute',
+    top:0,
+    height: 0,
+    width: 0,
+  },
 })
+
+const Mask = (props) => {
+  const {visible} = props;
+
+  if (visible == true) {
+    return (
+      <View style={styles.mask}></View>
+    );
+  }
+  else {
+    return (
+      <View style={styles.noMask}></View>
+    );
+  }
+}
 
 const App = (props) => {
   const {
@@ -140,6 +170,8 @@ const App = (props) => {
         <TextInput
            style={styles.searchBar}
            placeholder="Enter Destination" />
+           <Mask visible={isOpen}/>
+           
           <MapView
             style={styles.map}
             showsUserLocation={true}
