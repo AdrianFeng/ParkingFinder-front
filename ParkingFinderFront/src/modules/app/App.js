@@ -205,9 +205,6 @@ const App = (props) => {
           <TouchableOpacity style={styles.searchBar} onPress={showSearch}>
             <Text style={styles.searchBarButton}>{destination}</Text>
           </TouchableOpacity>
-        <TextInput
-           style={styles.searchBar}
-           placeholder="Enter Destination" />
            <Mask visible={isOpen}/>           
           <MapView
             style={styles.map}
