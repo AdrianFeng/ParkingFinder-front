@@ -12,6 +12,8 @@ import {
 	SHOWPARKINGLIST,
 	HIDEPARKINGLIST,
 	LOADPARKINGLIST,
+	SHOWSEARCH,
+	CLOSESEARCH,
 } from './constants'
 
 
@@ -40,6 +42,9 @@ const initialState = {
 	registerVehicleVisible: false,
     vehicleListVisible: false,
     AvailabeParkingListVisible: false,
+    searchVisible: false,
+    destination: "Enter Destination",
+   	location: null,
 };
 
 export default handleActions({
@@ -211,4 +216,23 @@ export default handleActions({
             dataSource,
         }
 	},
+	[SHOWSEARCH]: (state, action) => {
+		return {
+			...state,
+			searchVisible: true,
+		}
+	},
+	[CLOSESEARCH]: (state, action) => {
+		            console.log("CLOSESEARCH");
+		const { payload } = action;
+		console.log(payload.name);
+		console.log(payload.location);
+		return {
+			...state,
+			searchVisible: false,
+			destination: payload.name,
+			location: payload.location,
+		}
+	},
+
 }, initialState)

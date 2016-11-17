@@ -12,6 +12,8 @@ import {
     SHOWPARKINGLIST,
     HIDEPARKINGLIST,
     LOADPARKINGLIST,
+    SHOWSEARCH,
+    CLOSESEARCH,
 } from './constants'
 import api from './api/api'
 
@@ -145,4 +147,20 @@ export const loadParkingList = () => {
      }, 1000);
         // fetch().then() => dispatch in promise 
     }
-}
+};
+
+export const showSearch = () => {
+  return {
+    type: SHOWSEARCH,
+  }
+};
+
+export const closeSearch = (name, location) => {
+  return {
+    type: CLOSESEARCH,
+    payload: {
+      name: name,
+      location: location, 
+    }
+  }
+};

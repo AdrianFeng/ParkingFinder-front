@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import { StyleSheet, View, Text, Image, MapView, TextInput, TouchableOpacity, Dimensions,} from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, PixelRatio, View, Text, Image, MapView, TextInput, TouchableOpacity, Dimensions,} from 'react-native'
 import { connect } from 'react-redux'
 
 import {
@@ -15,6 +15,7 @@ import {
     VehicleRegistrationForm,
     VehicleList,
     AvailableParkingList,
+    GoogleAutocomplete,
 } from './../../components';
 
 import * as actions from './actions'
@@ -38,28 +39,56 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   map: {
-    position: 'absolute',
-    top:0,
-    height: window.height*0.87,
+    flex: 1,
+    marginTop:50,
+    height: window.height*0.6,
     width:window.width,
-    zIndex:0,
+  },
+  textInputContainer: {
+    height: window.height*0.05,
+    width:window.width*0.8,
+    backgroundColor: 'rgba(0,0,0,0)',
+    borderTopWidth: 1,
+    borderBottomWidth:1,
+    marginTop:15,
+    borderColor: '#E4E4E4',
+  },
+  textInput: {
+    color: 'grey',
+    height: 28,
+    borderRadius: 5,
+    paddingTop: 4.5,
+    paddingBottom: 4.5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginTop: 7.5,
+    marginLeft: 8,
+    marginRight: 8,
+    fontSize: 15,
   },
   searchBar: {
-    position: 'absolute',
     top:25,
-    zIndex: 999,
-    paddingLeft: 30,
-    marginLeft: 55,
-    fontSize: 22,
-    height: 40,
-    width:300,
-    flex: 0,
-    borderWidth: 2,
+    marginLeft: 65,
+    height: window.height*0.05,
+    width:window.width*0.8,
+    borderWidth: 1.5,
     borderColor: '#E4E4E4',
     backgroundColor: '#FFFFFF',
   },
+  searchBarButton: {
+    borderRadius: 5,
+    paddingTop: 4.5,
+    paddingBottom: 4.5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    textAlign: 'left',
+    fontSize: 15,
+    fontWeight: 'normal',
+    color:'grey',
+    flexDirection: 'row',
+  },
   requestButtonItem: {
-    marginTop:window.height*0.87,
+    marginTop:10,
     width:350,
     height:50,
     backgroundColor: '#696969',
@@ -113,6 +142,11 @@ const App = (props) => {
     dataSource,
     user,
     form,
+    searchVisible,
+    showSearch,
+    closeSearch,
+    destination,
+    location,
   } = props;
 
   if (!accessToken) {
@@ -137,9 +171,10 @@ const App = (props) => {
         isOpen={isOpen}
         onChange={(isOpen) => updateMenuState(isOpen)}>
         <View style={styles.container}>
-        <TextInput
-           style={styles.searchBar}
-           placeholder="Enter Destination" />
+        <GoogleAutocomplete visible={searchVisible} requestClose={closeSearch}/>
+          <TouchableOpacity style={styles.searchBar} onPress={showSearch}>
+            <Text style={styles.searchBarButton}>{destination}</Text>
+          </TouchableOpacity>
           <MapView
             style={styles.map}
             showsUserLocation={true}
@@ -204,6 +239,11 @@ App.propTypes = {
   onRegisterVehicleButtonClicked: PropTypes.func.isRequired,
   user: PropTypes.object,
   form: PropTypes.object,
+  searchVisible: PropTypes.bool.isRequired,
+  showSearch:PropTypes.func.isRequired,
+  closeSearch:PropTypes.func.isRequired,
+  destination: PropTypes.string.isRequired,
+  location: PropTypes.object,
 };
 
 export default connect(
@@ -223,6 +263,9 @@ export default connect(
     form: state.app.form,
     AvailabeParkingListVisible: state.app.AvailabeParkingListVisible,
     dataSource:state.app.dataSource,
+    searchVisible: state.app.searchVisible,
+    destination: state.app.destination,
+    location: state.app.location,
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
@@ -240,5 +283,7 @@ export default connect(
           actions.onRegisterVehicleSubmit(user.userId, accessToken, data,dispatch),
     onRegisterVehicleButtonClicked: () => dispatch(actions.openRegisterVehicleForm()),
     loadParkingList: () => dispatch(actions.loadParkingList()),
+    showSearch: ()=> dispatch(actions.showSearch()),
+    closeSearch: (name, location )=> dispatch(actions.closeSearch(name, location)),
   })
 )(App)
