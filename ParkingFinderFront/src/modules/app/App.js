@@ -151,6 +151,7 @@ const App = (props) => {
     toggle,
     myInfoVisible,
     historyVisible,
+    loadHistoryList,
     helpVisible,
     settingsVisible,
     registerVehicleVisible,
@@ -170,6 +171,7 @@ const App = (props) => {
     hideParkingList,
     loadParkingList,
     dataSource,
+    dataSourceHistory,
     user,
     form,
     searchVisible,
@@ -214,7 +216,11 @@ const App = (props) => {
             <Text style={styles.requestButton}>AVAILABLE PARKING</Text>
         </TouchableOpacity>
             <MyInfo visible={myInfoVisible} requestClose={closeModal} />
-            <History visible={historyVisible} requestClose={closeModal} />
+            <History 
+                visible={historyVisible} 
+                requestClose={closeModal} 
+                loadHistoryList={loadHistoryList}
+                dataSource={dataSourceHistory}/>
             <Help visible={helpVisible} requestClose={closeModal} />
             <Settings visible={settingsVisible} requestClose={closeModal} />
             <VehicleRegistrationForm
@@ -265,6 +271,7 @@ App.propTypes = {
   settingsVisible: PropTypes.bool.isRequired,
   AvailabeParkingListVisible: PropTypes.bool.isRequired,
   loadParkingList: PropTypes.func.isRequired,
+  loadHistoryList: PropTypes.func.isRequired,
   onTextFieldChanged: PropTypes.func.isRequired,
   onRegisterVehicleSubmit: PropTypes.func.isRequired,
   onRegisterVehicleButtonClicked: PropTypes.func.isRequired,
@@ -294,6 +301,7 @@ export default connect(
     form: state.app.form,
     AvailabeParkingListVisible: state.app.AvailabeParkingListVisible,
     dataSource:state.app.dataSource,
+    dataSourceHistory: state.app.dataSourceHistory,
     searchVisible: state.app.searchVisible,
     destination: state.app.destination,
     location: state.app.location,
@@ -314,6 +322,7 @@ export default connect(
           actions.onRegisterVehicleSubmit(user.userId, accessToken, data,dispatch),
     onRegisterVehicleButtonClicked: () => dispatch(actions.openRegisterVehicleForm()),
     loadParkingList: () => dispatch(actions.loadParkingList()),
+    loadHistoryList: () => dispatch(actions.loadHistoryList()),
     showSearch: ()=> dispatch(actions.showSearch()),
     closeSearch: (name, location )=> dispatch(actions.closeSearch(name, location)),
   })
