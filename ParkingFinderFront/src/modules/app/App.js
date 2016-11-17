@@ -108,7 +108,37 @@ const styles = StyleSheet.create({
   emptyPageText: {
     margin: 10,
   },
+  mask: {
+    position: 'absolute',
+    top:0,
+    height: window.height,
+    width:window.width,
+    backgroundColor: 'black',
+    opacity: 0.5,
+    zIndex:1000000,
+  },
+  noMask: {
+    position: 'absolute',
+    top:0,
+    height: 0,
+    width: 0,
+  },
 })
+
+const Mask = (props) => {
+  const {visible} = props;
+
+  if (visible == true) {
+    return (
+      <View style={styles.mask}></View>
+    );
+  }
+  else {
+    return (
+      <View style={styles.noMask}></View>
+    );
+  }
+}
 
 const App = (props) => {
   const {
@@ -175,6 +205,10 @@ const App = (props) => {
           <TouchableOpacity style={styles.searchBar} onPress={showSearch}>
             <Text style={styles.searchBarButton}>{destination}</Text>
           </TouchableOpacity>
+        <TextInput
+           style={styles.searchBar}
+           placeholder="Enter Destination" />
+           <Mask visible={isOpen}/>           
           <MapView
             style={styles.map}
             showsUserLocation={true}
@@ -207,7 +241,7 @@ const App = (props) => {
         </View>
         <MenuButton onClick={toggle}>
           <Image
-              source={require('./../../assets/menu.png')} style={{width: 32, height: 32}} />
+              source={require('./../../assets/menu.png')} resizeMode='contain' style={{width: 32, height: 32}} />
         </MenuButton>
       </SideMenu>
   );
