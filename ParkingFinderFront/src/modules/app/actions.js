@@ -16,6 +16,7 @@ import {
     SHOWSEARCH,
     CLOSESEARCH,
     SELECTPARKINGITEM,
+    CANCELREQUEST,
 } from './constants'
 import api from './api/api'
 
@@ -185,4 +186,11 @@ export const selectParkingItem = (selectedLong, selectedAl) => {
     }
   }
 };
+
+export const cancelRequest = () => {
+  return {
+    type: CANCELREQUEST,
+  }
+};
+
 

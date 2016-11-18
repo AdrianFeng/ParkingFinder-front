@@ -16,6 +16,7 @@ import {
 	SHOWSEARCH,
 	CLOSESEARCH,
 	SELECTPARKINGITEM,
+	CANCELREQUEST,
 } from './constants'
 
 
@@ -262,6 +263,14 @@ export default handleActions({
 			selectedAl: payload.selectedAl,
 			mainButtonStatus:2,
 			AvailabeParkingListVisible: false,
+		}
+	},
+	[CANCELREQUEST]: (state, action) => {
+		return {
+			...state,
+			selectedLong: null,
+			selectedAl: null,
+			mainButtonStatus:1,
 		}
 	},
 }, initialState)

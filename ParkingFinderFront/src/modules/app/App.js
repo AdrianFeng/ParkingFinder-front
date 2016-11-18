@@ -171,7 +171,6 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     fontWeight: 'normal',
     flexDirection: 'row',
-
   },
 })
 
@@ -231,6 +230,7 @@ const App = (props) => {
     location,
     selectParkingItem,
     mainButtonStatus,
+    cancelRequest,
   } = props;
 
   if (!accessToken) {
@@ -268,7 +268,7 @@ const App = (props) => {
     <TouchableOpacity style={styles.checkInStyle}>
         <Text style={styles.checkInTextStyle}>Check In</Text>
     </TouchableOpacity>
-    <TouchableOpacity style={styles.cancelStyle}>
+    <TouchableOpacity style={styles.cancelStyle} onPress={cancelRequest}>
         <Text style={styles.cancelTextStyle}>Cancel</Text>
     </TouchableOpacity>
     </View>
@@ -371,6 +371,7 @@ App.propTypes = {
   destination: PropTypes.string.isRequired,
   location: PropTypes.object,
   selectParkingItem: PropTypes.func.isRequired,
+  cancelRequest: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -416,5 +417,6 @@ export default connect(
     showSearch: ()=> dispatch(actions.showSearch()),
     closeSearch: (name, location )=> dispatch(actions.closeSearch(name, location)),
     selectParkingItem: (selectedLong, selectedAl) => dispatch(actions.selectParkingItem(selectedLong, selectedAl)),
+    cancelRequest: () => dispatch(actions.cancelRequest()),
   })
 )(App)
