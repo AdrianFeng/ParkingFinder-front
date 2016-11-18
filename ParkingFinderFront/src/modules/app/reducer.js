@@ -12,6 +12,7 @@ import {
 	SHOWPARKINGLIST,
 	HIDEPARKINGLIST,
 	LOADPARKINGLIST,
+	LOADHISTORYLIST,
 	SHOWSEARCH,
 	CLOSESEARCH,
 } from './constants'
@@ -26,6 +27,12 @@ const defaultParking = [
                     {address: '10981 Whilshire ave', distance: '122 ft', longitude: '33.47', latitude: '-104.85'},
                     {address: '10982 Westwood Plaza', distance: '1 mile', longitude: '34.47', latitude: '-107.85'},
                     {address: '10983 Ohio Street', distance: '1.5 mile', longitude: '35.47', latitude: '-102.85'},
+                ];
+const defaultHistory = [
+                    {address: '10980 Wellworth ave', date: '11/11/16, 6:27 PM', longitude: '32.47', latitude: '-107.85'},
+                    {address: '10981 Whilshire ave', date: '11/11/16, 11:11 PM', longitude: '33.47', latitude: '-104.85'},
+                    {address: '10982 Westwood Plaza', date: '11/11/16, 6:27 AM', longitude: '34.47', latitude: '-107.85'},
+                    {address: '10983 Ohio Street', date: '11/11/16, 5:27 PM', longitude: '35.47', latitude: '-102.85'},
                 ];
 const defaultDataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 defaultDataSource = defaultDataSource.cloneWithRows(defaultParking);
@@ -214,6 +221,14 @@ export default handleActions({
         return {
             ...state,
             dataSource,
+        }
+	},
+	[LOADHISTORYLIST]: (state, action) => {
+		var dataSourceHistory = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+        dataSourceHistory = dataSourceHistory.cloneWithRows(defaultHistory);
+        return {
+            ...state,
+            dataSourceHistory,
         }
 	},
 	[SHOWSEARCH]: (state, action) => {

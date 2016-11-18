@@ -12,6 +12,7 @@ import {
     SHOWPARKINGLIST,
     HIDEPARKINGLIST,
     LOADPARKINGLIST,
+    LOADHISTORYLIST,
     SHOWSEARCH,
     CLOSESEARCH,
 } from './constants'
@@ -144,6 +145,15 @@ export const loadParkingList = () => {
   return (dispatch) => {
     setTimeout(() => {
         dispatch({ type: LOADPARKINGLIST });
+     }, 1000);
+        // fetch().then() => dispatch in promise 
+    }
+};
+
+export const loadHistoryList = () => {
+  return (dispatch) => {
+    setTimeout(() => {
+        dispatch({ type: LOADHISTORYLIST });
      }, 1000);
         // fetch().then() => dispatch in promise 
     }
