@@ -5,7 +5,7 @@ import Button from 'apsl-react-native-button';
 
 const ParkingItem = (props) => {
 
-  const { longitude, latitude, address, distance , selectItem } = props;
+  const { longitude, latitude, address, distance , selectParkingItem } = props;
   var region = {
         latitude: parseFloat(latitude),
         longitude: parseFloat(longitude),
@@ -33,6 +33,11 @@ const ParkingItem = (props) => {
     <Text style={styles.textStyle}>{address}</Text>
     <Text style={styles.textStyle}>{distance}</Text>
     </View>
+    <Button
+      style={styles.requestStyle} textStyle={styles.requestTextStyle}
+      onPress={()=>{selectParkingItem(longitude,latitude)}}>
+        Request
+    </Button>
     </View>
     );
 
@@ -48,6 +53,8 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     margin: 5,
     borderColor: '#6B6B76',
+    borderBottomLeftRadius: 4,
+    borderBottomRightRadius: 4,
   },
   textViewContainer: {
   	flex: 0.2,
@@ -66,6 +73,21 @@ const styles = StyleSheet.create({
   	flex: 1,
   },
   textStyle: {
+    color: '#6B6B76',
+    fontFamily: 'Helvetica',
+  },
+  requestStyle: {
+    backgroundColor: '#F5FCFF',
+    borderTopColor: '#6B6B76',
+    borderBottomColor: '#F5FCFF',
+    borderRightColor: '#F5FCFF',
+    borderLeftColor: '#F5FCFF',
+    borderWidth: 1,
+    height: 25,
+    paddingTop:5,
+    borderRadius:0,
+  },
+  requestTextStyle: {
     color: '#6B6B76',
     fontFamily: 'Helvetica',
   },

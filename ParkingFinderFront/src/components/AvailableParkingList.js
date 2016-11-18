@@ -19,7 +19,8 @@ export default class AvailableParkingList extends Component {
       address={dataRow.address}
       distance={dataRow.distance}
       longitude={dataRow.longitude}
-      latitude = {dataRow.latitude}/>
+      latitude = {dataRow.latitude}
+      selectParkingItem={this.props.selectParkingItem}/>
       )
   } 
 

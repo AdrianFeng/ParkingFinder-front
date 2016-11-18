@@ -15,6 +15,7 @@ import {
 	LOADHISTORYLIST,
 	SHOWSEARCH,
 	CLOSESEARCH,
+	SELECTPARKINGITEM,
 } from './constants'
 
 
@@ -52,6 +53,9 @@ const initialState = {
     searchVisible: false,
     destination: "Enter Destination",
    	location: null,
+   	selectedLong: null,
+   	selectedAl: null,
+   	mainButtonStatus:1,
 };
 
 export default handleActions({
@@ -238,7 +242,6 @@ export default handleActions({
 		}
 	},
 	[CLOSESEARCH]: (state, action) => {
-		            console.log("CLOSESEARCH");
 		const { payload } = action;
 		console.log(payload.name);
 		console.log(payload.location);
@@ -249,5 +252,16 @@ export default handleActions({
 			location: payload.location,
 		}
 	},
-
+	[SELECTPARKINGITEM]: (state, action) => {
+		const { payload } = action;
+		console.log(payload.selectedLong);
+		console.log(payload.selectedAl);
+		return {
+			...state,
+			selectedLong: payload.selectedLong,
+			selectedAl: payload.selectedAl,
+			mainButtonStatus:2,
+			AvailabeParkingListVisible: false,
+		}
+	},
 }, initialState)

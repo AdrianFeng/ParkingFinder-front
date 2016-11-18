@@ -15,6 +15,7 @@ import {
     LOADHISTORYLIST,
     SHOWSEARCH,
     CLOSESEARCH,
+    SELECTPARKINGITEM,
 } from './constants'
 import api from './api/api'
 
@@ -174,3 +175,14 @@ export const closeSearch = (name, location) => {
     }
   }
 };
+
+export const selectParkingItem = (selectedLong, selectedAl) => {
+  return {
+    type: SELECTPARKINGITEM,
+    payload: {
+      selectedLong: selectedLong,
+      selectedAl: selectedAl, 
+    }
+  }
+};
+

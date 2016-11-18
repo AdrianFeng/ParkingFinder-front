@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import { StyleSheet, TouchableWithoutFeedback, PixelRatio, View, Text, Image, MapView, TextInput, TouchableOpacity, Dimensions,} from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, PixelRatio, Button, View, Text, Image, MapView, TextInput, TouchableOpacity, Dimensions,} from 'react-native'
 import { connect } from 'react-redux'
 
 import {
@@ -123,6 +123,56 @@ const styles = StyleSheet.create({
     height: 0,
     width: 0,
   },
+  footerContainer: {
+    flex: 0.15,
+    backgroundColor: '#F9F9F9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop:10,
+    width:350,
+    height:45,
+  },
+  buttonGroupStyle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  checkInStyle: {
+    borderColor: '#6B6B76',
+    backgroundColor: '#F9F9F9',
+    borderRadius: 4,
+    borderWidth: 1,
+    width: 160,
+    marginRight: 5,
+  },
+  cancelStyle: {
+    borderColor: '#6B6B76',
+    backgroundColor: '#6B6B76',
+    borderRadius: 4,
+    borderWidth: 1,
+    width: 160,
+    marginLeft: 5,
+  },
+  checkInTextStyle: {
+    color: '#6B6B76',
+    fontFamily: 'Helvetica',
+    paddingTop: 5,
+    paddingBottom: 5,
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'normal',
+    flexDirection: 'row',
+  },
+  cancelTextStyle: {
+    color: '#F9F9F9',
+    fontFamily: 'Helvetica',
+    paddingTop: 5,
+    textAlign: 'center',
+    fontSize: 18,
+    paddingBottom: 5,
+    fontWeight: 'normal',
+    flexDirection: 'row',
+
+  },
 })
 
 const Mask = (props) => {
@@ -179,6 +229,8 @@ const App = (props) => {
     closeSearch,
     destination,
     location,
+    selectParkingItem,
+    mainButtonStatus,
   } = props;
 
   if (!accessToken) {
@@ -189,6 +241,43 @@ const App = (props) => {
 
   if (user && !user.activated) {
     // user have to activate current using vehicle
+  }
+
+  let mainButton;
+  console.log(mainButtonStatus);
+  switch(mainButtonStatus) {
+    //available parking list
+    case 1:        
+    console.log("1");   
+    mainButton = (
+    <View style={styles.footerContainer}>
+    <View style={styles.buttonGroupStyle}>
+    <TouchableOpacity style={styles.requestButtonItem} onPress={showParkingList}>
+    <Text style={styles.requestButton}>AVAILABLE PARKING</Text>
+    </TouchableOpacity>
+    </View>
+    </View>
+    );
+    break;
+    //check in
+    case 2:
+    console.log("2");
+    mainButton = (
+    <View style={styles.footerContainer}>
+    <View style={styles.buttonGroupStyle}>
+    <TouchableOpacity style={styles.checkInStyle}>
+        <Text style={styles.checkInTextStyle}>Check In</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.cancelStyle}>
+        <Text style={styles.cancelTextStyle}>Cancel</Text>
+    </TouchableOpacity>
+    </View>
+    </View>
+    );
+    break;
+    default:
+    console.log("default");
+    break;
   }
 
   return (
@@ -212,9 +301,7 @@ const App = (props) => {
             style={styles.map}
             showsUserLocation={true}
             followUserLocation={true}/>
-        <TouchableOpacity style={styles.requestButtonItem} onPress={showParkingList}>
-            <Text style={styles.requestButton}>AVAILABLE PARKING</Text>
-        </TouchableOpacity>
+          {mainButton}
             <MyInfo visible={myInfoVisible} requestClose={closeModal} />
             <History 
                 visible={historyVisible} 
@@ -240,7 +327,8 @@ const App = (props) => {
                  visible={AvailabeParkingListVisible}
                  requestClose={hideParkingList}
                  loadParkingList={loadParkingList}
-                 dataSource={dataSource}/>
+                 dataSource={dataSource}
+                 selectParkingItem={selectParkingItem}/>
         </View>
         <MenuButton onClick={toggle}>
           <Image
@@ -282,6 +370,7 @@ App.propTypes = {
   closeSearch:PropTypes.func.isRequired,
   destination: PropTypes.string.isRequired,
   location: PropTypes.object,
+  selectParkingItem: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -305,6 +394,7 @@ export default connect(
     searchVisible: state.app.searchVisible,
     destination: state.app.destination,
     location: state.app.location,
+    mainButtonStatus: state.app.mainButtonStatus,
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
@@ -325,5 +415,6 @@ export default connect(
     loadHistoryList: () => dispatch(actions.loadHistoryList()),
     showSearch: ()=> dispatch(actions.showSearch()),
     closeSearch: (name, location )=> dispatch(actions.closeSearch(name, location)),
+    selectParkingItem: (selectedLong, selectedAl) => dispatch(actions.selectParkingItem(selectedLong, selectedAl)),
   })
 )(App)
