@@ -231,6 +231,8 @@ const App = (props) => {
     selectParkingItem,
     mainButtonStatus,
     cancelRequest,
+    checkin,
+    checkout,
   } = props;
 
   if (!accessToken) {
@@ -265,11 +267,24 @@ const App = (props) => {
     mainButton = (
     <View style={styles.footerContainer}>
     <View style={styles.buttonGroupStyle}>
-    <TouchableOpacity style={styles.checkInStyle}>
+    <TouchableOpacity style={styles.checkInStyle} onPress={checkin}>
         <Text style={styles.checkInTextStyle}>Check In</Text>
     </TouchableOpacity>
     <TouchableOpacity style={styles.cancelStyle} onPress={cancelRequest}>
         <Text style={styles.cancelTextStyle}>Cancel</Text>
+    </TouchableOpacity>
+    </View>
+    </View>
+    );
+    break;
+    //check out
+    case 3:        
+    console.log("1");   
+    mainButton = (
+    <View style={styles.footerContainer}>
+    <View style={styles.buttonGroupStyle}>
+    <TouchableOpacity style={styles.requestButtonItem} onPress={checkout}>
+    <Text style={styles.requestButton}>CHECK OUT</Text>
     </TouchableOpacity>
     </View>
     </View>
@@ -372,6 +387,8 @@ App.propTypes = {
   location: PropTypes.object,
   selectParkingItem: PropTypes.func.isRequired,
   cancelRequest: PropTypes.func.isRequired,
+  checkin: PropTypes.func.isRequired,
+  checkout: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -418,5 +435,7 @@ export default connect(
     closeSearch: (name, location )=> dispatch(actions.closeSearch(name, location)),
     selectParkingItem: (selectedLong, selectedAl) => dispatch(actions.selectParkingItem(selectedLong, selectedAl)),
     cancelRequest: () => dispatch(actions.cancelRequest()),
+    checkin: ()=> dispatch(actions.checkin()),
+    checkout: ()=> dispatch(actions.checkout()),
   })
 )(App)

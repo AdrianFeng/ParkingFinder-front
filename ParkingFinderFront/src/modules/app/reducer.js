@@ -17,6 +17,8 @@ import {
 	CLOSESEARCH,
 	SELECTPARKINGITEM,
 	CANCELREQUEST,
+	CHECKIN,
+	CHECKOUT,
 } from './constants'
 
 
@@ -266,6 +268,20 @@ export default handleActions({
 		}
 	},
 	[CANCELREQUEST]: (state, action) => {
+		return {
+			...state,
+			selectedLong: null,
+			selectedAl: null,
+			mainButtonStatus:1,
+		}
+	},
+	[CHECKIN]: (state, action) => {
+		return {
+			...state,
+			mainButtonStatus:3,
+		}
+	},
+	[CHECKOUT]: (state, action) => {
 		return {
 			...state,
 			selectedLong: null,

@@ -17,6 +17,8 @@ import {
     CLOSESEARCH,
     SELECTPARKINGITEM,
     CANCELREQUEST,
+    CHECKIN,
+    CHECKOUT,
 } from './constants'
 import api from './api/api'
 
@@ -193,4 +195,15 @@ export const cancelRequest = () => {
   }
 };
 
+export const checkin = () => {
+  return {
+    type: CHECKIN,
+  }
+};
+
+export const checkout = () => {
+  return {
+    type: CHECKOUT,
+  }
+};
 
