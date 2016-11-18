@@ -40,8 +40,8 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
-    marginTop:50,
-    height: window.height*0.6,
+    marginTop:35,
+    height: window.height*0.55,
     width:window.width,
   },
   textInputContainer: {
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   requestButtonItem: {
     marginTop:10,
     width:350,
-    height:50,
+    height:45,
     backgroundColor: '#696969',
   },
   requestButton: {
