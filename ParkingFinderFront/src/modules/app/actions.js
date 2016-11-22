@@ -18,6 +18,7 @@ import {
     SELECTPARKINGITEM,
     CANCELREQUEST,
     CHECKIN,
+    FINDMYVEHICLE,
     CHECKOUT,
 } from './constants'
 import api from './api/api'
@@ -204,6 +205,12 @@ export const checkin = () => {
 export const checkout = () => {
   return {
     type: CHECKOUT,
+  }
+};
+
+export const findMyVehicle = () => {
+  return {
+    type: FINDMYVEHICLE,
   }
 };
 

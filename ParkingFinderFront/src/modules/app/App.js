@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react'
 import { StyleSheet, TouchableWithoutFeedback, PixelRatio, Button, View, Text, Image, MapView, TextInput, TouchableOpacity, Dimensions,} from 'react-native'
 import { connect } from 'react-redux'
+import GoogleMap  from 'react-native-maps-google';
 
 import {
     Menu,
@@ -232,6 +233,7 @@ const App = (props) => {
     mainButtonStatus,
     cancelRequest,
     checkin,
+    findMyVehicle,
     checkout,
   } = props;
 
@@ -250,7 +252,6 @@ const App = (props) => {
   switch(mainButtonStatus) {
     //available parking list
     case 1:        
-    console.log("1");   
     mainButton = (
     <View style={styles.footerContainer}>
     <View style={styles.buttonGroupStyle}>
@@ -263,7 +264,6 @@ const App = (props) => {
     break;
     //check in
     case 2:
-    console.log("2");
     mainButton = (
     <View style={styles.footerContainer}>
     <View style={styles.buttonGroupStyle}>
@@ -277,9 +277,20 @@ const App = (props) => {
     </View>
     );
     break;
-    //check out
+    //find my vehicle
     case 3:        
-    console.log("1");   
+    mainButton = (
+    <View style={styles.footerContainer}>
+    <View style={styles.buttonGroupStyle}>
+    <TouchableOpacity style={styles.requestButtonItem} onPress={findMyVehicle}>
+    <Text style={styles.requestButton}>Find My Vehicle</Text>
+    </TouchableOpacity>
+    </View>
+    </View>
+    );
+    break;
+    //check out
+    case 4:        
     mainButton = (
     <View style={styles.footerContainer}>
     <View style={styles.buttonGroupStyle}>
@@ -291,7 +302,6 @@ const App = (props) => {
     );
     break;
     default:
-    console.log("default");
     break;
   }
 
@@ -312,10 +322,18 @@ const App = (props) => {
             <Text style={styles.searchBarButton}>{destination}</Text>
           </TouchableOpacity>
            <Mask visible={isOpen}/>           
-          <MapView
+          <GoogleMap
             style={styles.map}
             showsUserLocation={true}
-            followUserLocation={true}/>
+            scrollGestures={true}
+            zoomGestures={true}
+            tiltGestures={true}
+            rotateGestures={true}
+            consumesGesturesInView={true}
+            compassButton={true}
+            indoorPicker={true}
+            allowScrollGesturesDuringRotateOrZoom={true}
+            cameraPosition={{auto: true, zoom: 10}}/>
           {mainButton}
             <MyInfo visible={myInfoVisible} requestClose={closeModal} />
             <History 
@@ -388,6 +406,7 @@ App.propTypes = {
   selectParkingItem: PropTypes.func.isRequired,
   cancelRequest: PropTypes.func.isRequired,
   checkin: PropTypes.func.isRequired,
+  findMyVehicle: PropTypes.func.isRequired,
   checkout: PropTypes.func.isRequired,
 };
 
@@ -437,5 +456,6 @@ export default connect(
     cancelRequest: () => dispatch(actions.cancelRequest()),
     checkin: ()=> dispatch(actions.checkin()),
     checkout: ()=> dispatch(actions.checkout()),
+    findMyVehicle: () => dispatch(actions.findMyVehicle()),
   })
 )(App)

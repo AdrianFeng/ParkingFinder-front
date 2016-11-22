@@ -18,6 +18,7 @@ import {
 	SELECTPARKINGITEM,
 	CANCELREQUEST,
 	CHECKIN,
+	FINDMYVEHICLE,
 	CHECKOUT,
 } from './constants'
 
@@ -279,6 +280,12 @@ export default handleActions({
 		return {
 			...state,
 			mainButtonStatus:3,
+		}
+	},
+	[FINDMYVEHICLE]: (state, action) => {
+		return {
+			...state,
+			mainButtonStatus:4,
 		}
 	},
 	[CHECKOUT]: (state, action) => {
