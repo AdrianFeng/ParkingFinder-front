@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import { StyleSheet, TouchableWithoutFeedback, PixelRatio, Button, View, Text, Image, MapView, TextInput, TouchableOpacity, Dimensions,} from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback, PixelRatio, Button, View, Text, Image, TextInput, TouchableOpacity, Dimensions,} from 'react-native'
 import { connect } from 'react-redux'
 import GoogleMap  from 'react-native-maps-google';
 
@@ -247,6 +247,19 @@ const App = (props) => {
     // user have to activate current using vehicle
   }
 
+  let markers = [];
+  let cameraPosition = {auto: true, zoom: 15};
+  if(location) {
+    markers = [
+            {
+            id: 'marker-100',
+            latitude: location.lat,
+            longitude: location.lng,
+            },   
+            ];
+    cameraPosition = {latitude: location.lat, longitude: location.lng, zoom: 15}
+  }
+
   let mainButton;
   console.log(mainButtonStatus);
   switch(mainButtonStatus) {
@@ -329,11 +342,12 @@ const App = (props) => {
             zoomGestures={true}
             tiltGestures={true}
             rotateGestures={true}
-            consumesGesturesInView={true}
-            compassButton={true}
+            myLocationButton={true}
             indoorPicker={true}
             allowScrollGesturesDuringRotateOrZoom={true}
-            cameraPosition={{auto: true, zoom: 10}}/>
+            cameraPosition={cameraPosition}
+            markers={markers} 
+            />
           {mainButton}
             <MyInfo visible={myInfoVisible} requestClose={closeModal} />
             <History 

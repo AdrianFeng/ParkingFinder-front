@@ -28,10 +28,10 @@ import React, {
 } from 'react-native';
 
 const defaultParking = [
-                    {address: '10980 Wellworth ave', distance: '100 ft', longitude: '32.47', latitude: '-107.85'},
-                    {address: '10981 Whilshire ave', distance: '122 ft', longitude: '33.47', latitude: '-104.85'},
-                    {address: '10982 Westwood Plaza', distance: '1 mile', longitude: '34.47', latitude: '-107.85'},
-                    {address: '10983 Ohio Street', distance: '1.5 mile', longitude: '35.47', latitude: '-102.85'},
+                    {address: '10980 Wellworth ave', distance: '100 ft', longitude: -118.4453886, latitude: 34.0561251},
+                    {address: '10981 Whilshire Blvd', distance: '122 ft', longitude: -118.4472583, latitude: 34.0579264},
+                    {address: '10982 Westwood Plaza', distance: '1 mile', longitude: -118.4448444, latitude: 34.0693954},
+                    {address: '103 Ohio Ave', distance: '1.5 mile', longitude: -118.4484161, latitude: 34.0493621},
                 ];
 const defaultHistory = [
                     {address: '10980 Wellworth ave', date: '11/11/16, 6:27 PM', longitude: '32.47', latitude: '-107.85'},
@@ -248,6 +248,7 @@ export default handleActions({
 	[CLOSESEARCH]: (state, action) => {
 		const { payload } = action;
 		console.log(payload.name);
+		console.log("location");
 		console.log(payload.location);
 		return {
 			...state,

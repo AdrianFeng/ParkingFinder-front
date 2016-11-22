@@ -1,34 +1,25 @@
 import React, { PropTypes } from 'react'
 import TextField from 'react-native-md-textinput';
-import { Image, Modal, ScrollView, View, StyleSheet, Text, MapView } from 'react-native';
+import { Image, Modal, ScrollView, View, StyleSheet, Text } from 'react-native';
 import Button from 'apsl-react-native-button';
+import GoogleMap  from 'react-native-maps-google';
 
 const ParkingItem = (props) => {
 
   const { longitude, latitude, address, distance , selectParkingItem } = props;
-  var region = {
-        latitude: parseFloat(latitude),
-        longitude: parseFloat(longitude),
-        latitudeDelta: parseFloat('0.2f'),
-        longitudeDelta: parseFloat('0.2f'),
-      };
-  var annotation = 
-  [{
-    longitude: region.longitude,
-    latitude: region.latitude,
-    view: <Image
-            style={{width: 90, height: 65, resizeMode: 'cover'}}
-            source={require('./../assets/pin-in-the-map-red.png')}/>,
-  }];
-
+  console.log(address)
   return (
     <View style={styles.mainViewContainer}>
-    <MapView
+    <GoogleMap
     style={styles.map}
-    zoomEnabled={false}
-    scrollEnabled ={false}
-    region={region}
-    annotations={annotation}/>
+    markers={[
+      {
+        id: address,
+        latitude: latitude,
+        longitude: longitude,
+      },]}
+      cameraPosition={{latitude: latitude, longitude: longitude, zoom: 3}}
+      />
     <View style={styles.textViewContainer}>
     <Text style={styles.textStyle}>{address}</Text>
     <Text style={styles.textStyle}>{distance}</Text>
