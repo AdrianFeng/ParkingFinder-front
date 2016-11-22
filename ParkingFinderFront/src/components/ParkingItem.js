@@ -27,7 +27,7 @@ const ParkingItem = (props) => {
     <Button
       style={styles.requestStyle} textStyle={styles.requestTextStyle}
       onPress={()=>{selectParkingItem(longitude,latitude)}}>
-        Request
+        Reserve
     </Button>
     </View>
     );
