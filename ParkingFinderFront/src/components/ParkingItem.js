@@ -11,6 +11,7 @@ const ParkingItem = (props) => {
   return (
     <View style={styles.mainViewContainer}>
     <GoogleMap
+    cameraPosition={{latitude: latitude, longitude: longitude, zoom: 3}}
     style={styles.map}
     markers={[
       {
@@ -18,7 +19,6 @@ const ParkingItem = (props) => {
         latitude: latitude,
         longitude: longitude,
       },]}
-      cameraPosition={{latitude: latitude, longitude: longitude, zoom: 3}}
       />
     <View style={styles.textViewContainer}>
     <Text style={styles.textStyle}>{address}</Text>

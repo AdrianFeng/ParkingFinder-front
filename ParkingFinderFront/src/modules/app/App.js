@@ -235,6 +235,8 @@ const App = (props) => {
     checkin,
     findMyVehicle,
     checkout,
+    selectedLong,
+    selectedAl,
   } = props;
 
   if (!accessToken) {
@@ -258,6 +260,17 @@ const App = (props) => {
             },   
             ];
     cameraPosition = {latitude: location.lat, longitude: location.lng, zoom: 15}
+  }
+
+  if(selectedLong && selectedAl) {
+        markers = [
+            {
+            id: 'marker-100',
+            latitude: selectedAl,
+            longitude: selectedLong,
+            },   
+            ];
+    cameraPosition = {latitude: selectedAl, longitude: selectedLong, zoom: 15}
   }
 
   let mainButton;
@@ -337,6 +350,7 @@ const App = (props) => {
            <Mask visible={isOpen}/>           
           <GoogleMap
             style={styles.map}
+            cameraPosition={cameraPosition}
             showsUserLocation={true}
             scrollGestures={true}
             zoomGestures={true}
@@ -345,7 +359,6 @@ const App = (props) => {
             myLocationButton={true}
             indoorPicker={true}
             allowScrollGesturesDuringRotateOrZoom={true}
-            cameraPosition={cameraPosition}
             markers={markers} 
             />
           {mainButton}
@@ -446,6 +459,8 @@ export default connect(
     destination: state.app.destination,
     location: state.app.location,
     mainButtonStatus: state.app.mainButtonStatus,
+    selectedLong: state.app.selectedLong,
+    selectedAl: state.app.selectedAl,
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
