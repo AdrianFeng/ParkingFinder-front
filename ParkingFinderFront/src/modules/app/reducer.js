@@ -58,7 +58,7 @@ const initialState = {
     destination: "Enter Destination",
    	location: null,
    	selectedLong: null,
-   	selectedAl: null,
+   	selectedLa: null,
    	mainButtonStatus:1,
 };
 
@@ -260,11 +260,11 @@ export default handleActions({
 	[SELECTPARKINGITEM]: (state, action) => {
 		const { payload } = action;
 		console.log(payload.selectedLong);
-		console.log(payload.selectedAl);
+		console.log(payload.selectedLa);
 		return {
 			...state,
 			selectedLong: payload.selectedLong,
-			selectedAl: payload.selectedAl,
+			selectedLa: payload.selectedLa,
 			mainButtonStatus:2,
 			AvailabeParkingListVisible: false,
 		}
@@ -273,7 +273,7 @@ export default handleActions({
 		return {
 			...state,
 			selectedLong: null,
-			selectedAl: null,
+			selectedLa: null,
 			mainButtonStatus:1,
 		}
 	},
@@ -293,7 +293,7 @@ export default handleActions({
 		return {
 			...state,
 			selectedLong: null,
-			selectedAl: null,
+			selectedLa: null,
 			mainButtonStatus:1,
 		}
 	},

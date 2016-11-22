@@ -236,7 +236,7 @@ const App = (props) => {
     findMyVehicle,
     checkout,
     selectedLong,
-    selectedAl,
+    selectedLa,
   } = props;
 
   if (!accessToken) {
@@ -262,15 +262,15 @@ const App = (props) => {
     cameraPosition = {latitude: location.lat, longitude: location.lng, zoom: 15}
   }
 
-  if(selectedLong && selectedAl) {
+  if(selectedLong && selectedLa) {
         markers = [
             {
             id: 'marker-100',
-            latitude: selectedAl,
+            latitude: selectedLa,
             longitude: selectedLong,
             },   
             ];
-    cameraPosition = {latitude: selectedAl, longitude: selectedLong, zoom: 15}
+    cameraPosition = {latitude: selectedLa, longitude: selectedLong, zoom: 15}
   }
 
   let mainButton;
@@ -460,7 +460,7 @@ export default connect(
     location: state.app.location,
     mainButtonStatus: state.app.mainButtonStatus,
     selectedLong: state.app.selectedLong,
-    selectedAl: state.app.selectedAl,
+    selectedLa: state.app.selectedLa,
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
@@ -481,7 +481,7 @@ export default connect(
     loadHistoryList: () => dispatch(actions.loadHistoryList()),
     showSearch: ()=> dispatch(actions.showSearch()),
     closeSearch: (name, location )=> dispatch(actions.closeSearch(name, location)),
-    selectParkingItem: (selectedLong, selectedAl) => dispatch(actions.selectParkingItem(selectedLong, selectedAl)),
+    selectParkingItem: (selectedLong, selectedLa) => dispatch(actions.selectParkingItem(selectedLong, selectedLa)),
     cancelRequest: () => dispatch(actions.cancelRequest()),
     checkin: ()=> dispatch(actions.checkin()),
     checkout: ()=> dispatch(actions.checkout()),

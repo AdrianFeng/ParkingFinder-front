@@ -180,12 +180,12 @@ export const closeSearch = (name, location) => {
   }
 };
 
-export const selectParkingItem = (selectedLong, selectedAl) => {
+export const selectParkingItem = (selectedLong, selectedLa) => {
   return {
     type: SELECTPARKINGITEM,
     payload: {
       selectedLong: selectedLong,
-      selectedAl: selectedAl, 
+      selectedLa: selectedLa, 
     }
   }
 };
