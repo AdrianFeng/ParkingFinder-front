@@ -6,7 +6,7 @@ import GoogleMap  from 'react-native-maps-google';
 
 const ParkingItem = (props) => {
 
-  const { longitude, latitude, address, distance , selectParkingItem } = props;
+  const { plate, longitude, latitude, address, distance , selectParkingItem } = props;
   console.log(address)
   return (
     <View style={styles.mainViewContainer}>
@@ -26,7 +26,7 @@ const ParkingItem = (props) => {
     </View>
     <Button
       style={styles.requestStyle} textStyle={styles.requestTextStyle}
-      onPress={()=>{selectParkingItem(longitude,latitude)}}>
+      onPress={()=>{selectParkingItem(plate)}}>
         Reserve
     </Button>
     </View>

@@ -9,10 +9,6 @@ export default class AvailableParkingList extends Component {
     super(props);
   }
 
-  componentDidMount() {
-    this.props.loadParkingList();
-  }
-
   renderRow(dataRow) {
     return (
       <ParkingItem
@@ -20,6 +16,7 @@ export default class AvailableParkingList extends Component {
       distance={dataRow.distance}
       longitude={dataRow.longitude}
       latitude = {dataRow.latitude}
+      plate = {dataRow.plate}
       selectParkingItem={this.props.selectParkingItem}/>
       )
   } 

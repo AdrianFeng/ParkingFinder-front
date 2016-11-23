@@ -20,6 +20,10 @@ import {
     CHECKIN,
     FINDMYVEHICLE,
     CHECKOUT,
+    DISPLAY_AVAILABLE_PARKING_SPACES,
+    REQUEST_PARKING_SPACES,
+    SAVE_TO_HISTORY,
+    ACTIVE_VEHICLE
 } from './constants'
 import api from './api/api'
 
@@ -134,10 +138,28 @@ export const onRegisterVehicleSubmit = (userId, accessToken, data, dispatch) => 
     }
 };
 
-export const showParkingList = () => {
-  return {
-    type: SHOWPARKINGLIST,
-  }
+export const showParkingList = (
+    userId,
+    accessToken,
+    location,
+    dispatch
+) => {
+    dispatch({
+        type: REQUEST_PARKING_SPACES,
+        payload: {loadingAvailableParkingSpaces : true},
+    });
+    api.requestParkingSpaces(
+        userId,
+        accessToken,
+        location,
+        ( payload ) => {
+            payload['loadingAvailableParkingSpaces'] = false;
+            dispatch({
+                type: REQUEST_PARKING_SPACES,
+                payload: payload,
+            })
+        }
+    );
 };
 
 export const hideParkingList = () => {
@@ -146,13 +168,29 @@ export const hideParkingList = () => {
   }
 };
 
-export const loadParkingList = () => {
-  return (dispatch) => {
-    setTimeout(() => {
-        dispatch({ type: LOADPARKINGLIST });
-     }, 1000);
-        // fetch().then() => dispatch in promise 
-    }
+export const loadParkingList = (
+    userId,
+    accessToken,
+    location,
+    dispatch
+) => {
+    dispatch({
+        type: REQUEST_PARKING_SPACES,
+        payload: null,
+        loadingAvailableParkingSpaces: true,
+    })
+    api.requestParkingSpace(
+        userId,
+        accessToken,
+        location,
+        ( payload ) => {
+            dispatch({
+                type: REQUEST_PARKING_SPACE,
+                payload: payload,
+                loadingAvailableParkingSpaces: false,
+            })
+        }
+    )
 };
 
 export const loadHistoryList = () => {
@@ -170,24 +208,42 @@ export const showSearch = () => {
   }
 };
 
-export const closeSearch = (name, location) => {
-  return {
-    type: CLOSESEARCH,
-    payload: {
-      name: name,
-      location: location, 
-    }
-  }
+export const closeSearch = (userId, accessToken, name, location, dispatch) => {
+  // fetch available parking spaces around the destination from backend
+  api.fetchAvailableParkingSpaces(
+      userId,
+      accessToken,
+      location,
+      ( payload ) => {
+          dispatch({
+              type: CLOSESEARCH,
+              payload: {
+                  name: name,
+                  location: location,
+              }
+          });
+          if (payload.availableParkingSpaces) {
+              dispatch({
+                  type: DISPLAY_AVAILABLE_PARKING_SPACES,
+                  payload
+              })
+          }
+      }
+  );
 };
 
-export const selectParkingItem = (selectedLong, selectedLa) => {
-  return {
-    type: SELECTPARKINGITEM,
-    payload: {
-      selectedLong: selectedLong,
-      selectedLa: selectedLa, 
-    }
-  }
+export const selectParkingItem = (userId, accessToken, plate, dispatch) => {
+    api.reserveParkingSpace(
+        userId,
+        accessToken,
+        plate,
+        ( payload ) => {
+            dispatch({
+                type: SELECTPARKINGITEM,
+                payload: payload
+            });
+        }
+    );
 };
 
 export const cancelRequest = () => {
@@ -196,21 +252,71 @@ export const cancelRequest = () => {
   }
 };
 
-export const checkin = () => {
-  return {
-    type: CHECKIN,
-  }
+export const checkin = (userId, accessToken, plate, location, dispatch) => {
+    api.checkin(
+        userId,
+        accessToken,
+        plate,
+        location,
+        ( payload ) => {
+            dispatch({
+                type: SAVE_TO_HISTORY,
+                payload: payload
+            });
+
+            dispatch({
+                type: CHECKIN,
+                payload:payload
+            })
+
+        }
+    );
 };
 
-export const checkout = () => {
-  return {
-    type: CHECKOUT,
-  }
+export const checkout = (userId, accessToken, plate, dispatch) => {
+    api.checkout(
+        userId,
+        accessToken,
+        plate,
+        location,
+        ( payload ) => {
+            dispatch({
+                type: SAVE_TO_HISTORY,
+                payload: payload
+            });
+
+            dispatch({
+                type: CHECKOUT,
+                payload:payload
+            })
+        }
+    );
 };
 
-export const findMyVehicle = () => {
-  return {
-    type: FINDMYVEHICLE,
-  }
+export const findMyVehicle = (userId, accessToken, plate, dispatch) => {
+    api.postParkingSpace(
+        userId,
+        accessToken,
+        plate,
+        ( payload ) => {
+            dispatch({
+                type: FINDMYVEHICLE,
+                payload: payload
+            })
+        }
+    );
 };
 
+export const activeVehicle = (userId, accessToken, plate, dispatch) => {
+    api.activeVehicle(
+        userId,
+        accessToken,
+        plate,
+        ( payload ) => {
+            dispatch({
+                type: ACTIVE_VEHICLE,
+                payload: payload
+            })
+        }
+    );
+};
