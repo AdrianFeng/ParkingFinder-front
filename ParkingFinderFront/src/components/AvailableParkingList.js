@@ -3,6 +3,7 @@ import TextField from 'react-native-md-textinput';
 import { Modal, ListView, View, StyleSheet, Text } from 'react-native';
 import Button from 'apsl-react-native-button';
 import ParkingItem from './ParkingItem'
+import ProgressBar from './ProgressBar'
 
 export default class AvailableParkingList extends Component {
   constructor(props) {
@@ -47,6 +48,7 @@ export default class AvailableParkingList extends Component {
       <View style={styles.mainViewContainer}>
       <View style={styles.headerContainer}>
       <Text style={styles.headerText}>AVAILABLE PARKING</Text>
+      <ProgressBar style={styles.ProgressBarStyle} callback={this.props.loadParkingList}/>
       </View>
       {this.renderList()}
       <View style={styles.footerContainer}>
@@ -108,4 +110,10 @@ const styles = StyleSheet.create({
     color: '#F9F9F9',
     fontFamily: 'Helvetica',
   },
+  ProgressBarStyle: {
+    flex:1,
+    marginLeft:10,
+    marginRight:10,
+    width: 300,
+  }
 });
