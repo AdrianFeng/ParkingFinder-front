@@ -26,6 +26,7 @@ var ProgressBar = React.createClass({
     console.log(this.state.progress % Math.PI);
     if(this.state.progress % Math.PI >= (Math.PI /2)) {
       this.setState({ progress: 0 });
+      this.props.callback();
     } else {
       this.setState({ progress: this.state.progress + 0.1 });
     }

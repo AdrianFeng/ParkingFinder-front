@@ -237,6 +237,7 @@ const App = (props) => {
     checkout,
     selectedLng,
     selectedLat,
+    loadingAvailableParkingSpaces,
   } = props;
 
   if (!accessToken) {
@@ -387,6 +388,7 @@ const App = (props) => {
                  visible={AvailabeParkingListVisible}
                  requestClose={hideParkingList}
                  loadParkingList={loadParkingList(user.userId, accessToken.accessToken)}
+                 loading={loadingAvailableParkingSpaces}
                  dataSource={dataSource}
                  selectParkingItem={selectParkingItem(user.userId, accessToken.accessToken)}/>
         </View>
@@ -436,6 +438,7 @@ App.propTypes = {
   findMyVehicle: PropTypes.func.isRequired,
   checkout: PropTypes.func.isRequired,
   onVehicleListEntryClicked: PropTypes.func.isRequired,
+  loadingAvailableParkingSpaces: PropTypes.bool,
 };
 
 export default connect(
@@ -462,6 +465,7 @@ export default connect(
     mainButtonStatus: state.app.mainButtonStatus,
     selectedLng: state.app.selectedLng,
     selectedLat: state.app.selectedLat,
+    loadingAvailableParkingSpaces: state.app.loadingAvailableParkingSpaces,
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),

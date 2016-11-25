@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import TextField from 'react-native-md-textinput';
-import { Modal, ListView, View, StyleSheet, Text } from 'react-native';
+import { Modal, ListView, View, StyleSheet, Text, ActivityIndicatorIOS } from 'react-native';
 import Button from 'apsl-react-native-button';
 import ParkingItem from './ParkingItem'
 import ProgressBar from './ProgressBar'
@@ -33,21 +33,31 @@ export default class AvailableParkingList extends Component {
 
   renderIndicator() {
     return (
-      <ActivityIndicatorIOS animating={true} color={'#808080'} size={'small'} />
+      <ActivityIndicatorIOS animating={true} color={'#808080'} size={'small'} style={styles.indicator}/>
       );
   }
 
   render() {
+    var header;
+    if (this.props.loading) {
+      header = (
+      <View style={styles.headerContainer}>
+      <Text style={styles.headerText}>AVAILABLE PARKING</Text>
+      </View>)
+    } else {
+      header = (
+      <View style={styles.headerContainer}>
+      <Text style={styles.headerText}>AVAILABLE PARKING</Text>
+      <ProgressBar style={styles.ProgressBarStyle} callback={this.props.loadParkingList}/>
+      </View>)
+    }
     return (
       <Modal
       animationType='slide'
       visible={this.props.visible}>
       <View style={styles.mainViewContainer}>
-      <View style={styles.headerContainer}>
-      <Text style={styles.headerText}>AVAILABLE PARKING</Text>
-      <ProgressBar style={styles.ProgressBarStyle} callback={this.props.loadParkingList}/>
-      </View>
-      {this.renderList()}
+      {header}
+      {this.props.loading ? this.renderIndicator() : this.renderList()}
       <View style={styles.footerContainer}>
       <Button
       style={styles.cancelStyle} textStyle={styles.cancelTextStyle}
@@ -107,10 +117,13 @@ const styles = StyleSheet.create({
     color: '#F9F9F9',
     fontFamily: 'Helvetica',
   },
+  indicator: {
+    flex: 0.75,
+  },
   ProgressBarStyle: {
     flex:1,
     marginLeft:10,
     marginRight:10,
     width: 300,
-  }
+  },
 });
