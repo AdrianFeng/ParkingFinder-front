@@ -23,7 +23,9 @@ import {
     DISPLAY_AVAILABLE_PARKING_SPACES,
     REQUEST_PARKING_SPACES,
     SAVE_TO_HISTORY,
-    ACTIVE_VEHICLE
+    ACTIVE_VEHICLE,
+    UPDATE_CURRENT_LOCATION,
+    POST_PARKING_SPACE,
 } from './constants'
 import api from './api/api'
 
@@ -157,7 +159,7 @@ export const showParkingList = (
             dispatch({
                 type: REQUEST_PARKING_SPACES,
                 payload: payload,
-            })
+            });
         }
     );
 };
@@ -174,20 +176,21 @@ export const loadParkingList = (
     location,
     dispatch
 ) => {
+    const payload = {};
+    payload['availableParkingSpaces'] = true;
     dispatch({
         type: REQUEST_PARKING_SPACES,
-        payload: null,
-        loadingAvailableParkingSpaces: true,
-    })
-    api.requestParkingSpace(
+        payload: payload,
+    });
+    api.requestParkingSpaces(
         userId,
         accessToken,
         location,
         ( payload ) => {
+            payload['availableParkingSpaces'] = false;
             dispatch({
-                type: REQUEST_PARKING_SPACE,
+                type: REQUEST_PARKING_SPACES,
                 payload: payload,
-                loadingAvailableParkingSpaces: false,
             })
         }
     )
@@ -278,7 +281,6 @@ export const checkout = (userId, accessToken, plate, dispatch) => {
         userId,
         accessToken,
         plate,
-        location,
         ( payload ) => {
             dispatch({
                 type: SAVE_TO_HISTORY,
@@ -294,13 +296,20 @@ export const checkout = (userId, accessToken, plate, dispatch) => {
 };
 
 export const findMyVehicle = (userId, accessToken, plate, dispatch) => {
+
+    dispatch({
+        type: FINDMYVEHICLE,
+        payload: {
+            plate
+        }
+    });
     api.postParkingSpace(
         userId,
         accessToken,
         plate,
         ( payload ) => {
             dispatch({
-                type: FINDMYVEHICLE,
+                type: POST_PARKING_SPACE,
                 payload: payload
             })
         }
@@ -319,4 +328,14 @@ export const activeVehicle = (userId, accessToken, plate, dispatch) => {
             })
         }
     );
+};
+
+export const updateCurrentLocation = (location) => {
+    return {
+        type: UPDATE_CURRENT_LOCATION,
+        payload: {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude
+        }
+    }
 };

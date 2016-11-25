@@ -23,7 +23,9 @@ import {
 	DISPLAY_AVAILABLE_PARKING_SPACES,
 	REQUEST_PARKING_SPACES,
 	SAVE_TO_HISTORY,
-	ACTIVE_VEHICLE
+	ACTIVE_VEHICLE,
+	UPDATE_CURRENT_LOCATION,
+	POST_PARKING_SPACE,
 } from './constants'
 
 
@@ -45,6 +47,8 @@ const defaultHistory = [
                 ];
 let defaultDataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 defaultDataSource = defaultDataSource.cloneWithRows(defaultParking);
+let historyDefaultDataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+historyDefaultDataSource = historyDefaultDataSource.cloneWithRows(defaultParking);
 
 const initialState = {
 	isOpen: false,
@@ -64,7 +68,9 @@ const initialState = {
    	selectedLng: null,
    	selectedLat: null,
    	mainButtonStatus:1,
-	dataSource: defaultDataSource
+	dataSource: defaultDataSource,
+    dataSourceHistory: historyDefaultDataSource,
+	markers: [],
 };
 
 export default handleActions({
@@ -260,29 +266,45 @@ export default handleActions({
 			searchVisible: false,
 			destination: payload.name,
 			location: payload.location,
+			cameraLatLng: {
+				longitude: location.lng,
+				latitude: location.lat
+			}
 		}
 	},
 	[SELECTPARKINGITEM]: (state, action) => {
 		const { payload } = action;
 		if (payload.error) {
+            const dataSource = defaultDataSource.cloneWithRows([]);
 			return {
 				...state,
 				navigation: null,
 				displayNavigation: false,
 				AvailableParkingListVisible: true,
+				dataSource,
 				error: payload.error
 			}
 		}
 		else {
+            const markers = [];
+            const { reservation } = payload;
+		    markers.push({
+		    	id: reservation.parkingSpace.plate,
+		    	latitude: reservation.parkingSpace.latitude,
+				longitude: reservation.parkingSpace.longitude
+			});
+
 			return {
 				...state,
 				navigation: {
-					vehicle: payload.reservation.vehicle,
-					parkingSpace: payload.reservation.parkingSpace,
+					vehicle: reservation.vehicle,
+					parkingSpace: reservation.parkingSpace,
 				},
+				markers,
 				mainButtonStatus:2,
 				displayNavigation: true,
 				AvailabeParkingListVisible: false,
+				cameraLatLng: null
 			}
 		}
 	},
@@ -313,7 +335,14 @@ export default handleActions({
 				parkingLot,
 				displayNavigation: false,
 				mainButtonStatus:3,
+				markers: [],
+				cameraLatLng: null
 			}
+		}
+	},
+	[POST_PARKING_SPACE]: (state, action) => {
+		return {
+			...state
 		}
 	},
 	[FINDMYVEHICLE]: (state, action) => {
@@ -321,17 +350,31 @@ export default handleActions({
 		if (payload.error) {
 			return {
 				...state,
-				error: payload.error
+				error: payload.error,
+				mainButtonStatus: 4
 			}
 		}
 		else {
+
 			const plate = payload.plate;
             const parkingSpace = state.parkingLot[plate];
+            const markers = [];
+            markers.push({
+            	id: parkingSpace.plate,
+				latitude: parkingSpace.latitude,
+				longitude: parkingSpace.longitude
+			});
+            const cameraLatLng = {
+                latitude: parkingSpace.latitude,
+                longitude: parkingSpace.longitude
+			};
 			return {
 				...state,
 				navigation: {
 					parkingSpace
 				},
+				markers,
+				cameraLatLng,
 				displayNavigation: true,
 				mainButtonStatus:4,
 			}
@@ -344,6 +387,8 @@ export default handleActions({
 		return {
 			...state,
             parkingLot,
+			cameraLatLng: null,
+			markers: [],
 			navigation: null,
 			displayNavigation: false,
 			mainButtonStatus:1,
@@ -359,10 +404,26 @@ export default handleActions({
 			}
 		}
 		else {
-            const availableParkingSpaces = payload.availableParkingSpaces;
+
+		    const markers = payload.availableParkingSpaces.map((parkingSpace, id) => {
+		    	return {
+		    		id: '' + id,
+					latitude: parkingSpace.latitude,
+					longitude: parkingSpace.longitude
+				}
+			});
+		    let cameraLatLng = null;
+		    if (payload.availableParkingSpaces && payload.availableParkingSpaces.length > 0) {
+		    	cameraLatLng = {
+		    		latitude: payload.availableParkingSpaces[0].latitude,
+					longitude: payload.availableParkingSpaces[0].longitude
+		    	}
+			}
+
 			return {
 				...state,
-                availableParkingSpaces,
+                markers,
+                cameraLatLng
 			}
 		}
 	},
@@ -398,7 +459,7 @@ export default handleActions({
 		}
 	},
 	[SAVE_TO_HISTORY]: (state, action) => {
-		console.log('reducer:SAVE_TO_HISTORY not implement')
+		console.log('reducer:SAVE_TO_HISTORY not implement');
         return {
 			...state,
 		}
@@ -414,13 +475,21 @@ export default handleActions({
 		}
 		else {
 			const user = state.user;
-			user.update({
-				activated_vehicle: payload.activated_vehicle
-			});
+			user['activated_vehicle'] = payload.activated_vehicle;
 			return {
 				...state,
 				user
 			};
 		}
-	}
+	},
+	[UPDATE_CURRENT_LOCATION]: (state, action) => {
+		const { payload } = action;
+		return {
+			...state,
+			location: {
+				lng: payload.longitude,
+				lat: payload.latitude
+			}
+		}
+	},
 }, initialState)
