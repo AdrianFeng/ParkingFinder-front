@@ -6,7 +6,7 @@ const VehicleEntry = (props) => {
 
     const {
         vehicle,
-        activatedVehiclePlate,
+        onEntryPressed,
     } = props;
 
     return (
@@ -39,7 +39,7 @@ const VehicleEntry = (props) => {
                 <View style={styles.buttonContainer}>
                     <Button
                         style={styles.vehicleActivateButtonStyle} textStyle={styles.vehicleActivateTextStyle}
-                        onPress={activatedVehiclePlate}>
+                        onPress={onEntryPressed}>
                         Activate
                     </Button>
                 </View>

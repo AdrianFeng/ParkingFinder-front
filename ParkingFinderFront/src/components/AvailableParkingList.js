@@ -24,10 +24,11 @@ export default class AvailableParkingList extends Component {
 
   renderList() {
     return (
-      <ListView 
-      style={styles.formContainer}
-      dataSource={this.props.dataSource}
-      renderRow={this.renderRow.bind(this)} />
+      <ListView
+          enableEmptySections={true}
+          style={styles.formContainer}
+          dataSource={this.props.dataSource}
+          renderRow={this.renderRow.bind(this)} />
       );
   }
 

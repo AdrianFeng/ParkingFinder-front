@@ -80,7 +80,7 @@ const registerVehicle = (
     )
         .then(ApiUtils.checkStatus)
         .then(() => {
-            callback()
+            callback({})
         })
         .catch((error) => {
             callback({
@@ -109,7 +109,7 @@ const activeVehicle = (
     )
         .then(ApiUtils.checkStatus)
         .then(() => {
-            callback()
+            callback({})
         })
         .catch((error) => {
             callback({
@@ -125,27 +125,37 @@ const fetchAvailableParkingSpaces = (
     callback
 ) => {
     console.log('fetchAvailableParkingSpace not implement');
-    const payload = {
-        availableParkingSpaces: [
-            {
-                'longitude': location['lat'] + 0.00004,
-                'latitude': location['lng'] + 0.00004,
-            },
-            {
-                'longitude': location['lat'] - 0.00004,
-                'latitude': location['lng'] - 0.00004,
-            },
-            {
-                'longitude': location['lat'] - 0.00004,
-                'latitude': location['lng'] + 0.00004,
-            },
-            {
-                'longitude': location['lat'] + 0.00004,
-                'latitude': location['lng'] - 0.00004,
+    fetch(
+        `${BASE_URL}/parkingSpace/fetchnearby/${userId}?latitude=${location.lat}&longitude=${location.lng}&access_token=${accessToken}`,
+        {
+            headers: HEADERS,
+        }
+    )
+        .then(ApiUtils.checkStatus)
+        .then(response  => response.json())
+        .then(responseJson => {
+            if (responseJson) {
+                const availableParkingSpaces = responseJson.available_parking_spaces;
+                const res = availableParkingSpaces.map((parkingSpace) => {
+                        return {
+                            'longitude': parkingSpace.longitude,
+                            'latitude': parkingSpace.latitude,
+                        }
+                    }
+                );
+                return callback({
+                    availableParkingSpaces: res
+                });
             }
-        ]
-    };
-    return callback(payload)
+            else {
+                return callback({
+                    availableParkingSpaces: []
+                })
+            }
+        })
+        .catch((error) =>
+            callback({error: error})
+        );
 };
 
 const requestParkingSpaces = (
@@ -154,42 +164,35 @@ const requestParkingSpaces = (
     location,
     callback
 ) => {
-    console.log('requestParkingSpace not implement');
-    location = {'lat': 50.11112, 'lng': 40.1112};
-    const payload = {
-        availableParkingSpaces: [
-            {
-                plate: '1111111',
-                longitude: location['lat'] + 0.00004,
-                latitude: location['lng'] + 0.00004,
-                address: '10980 Wellworth ave',
-                distance: '100 ft'
-            },
-            {
-                plate: '2222222',
-                longitude: location['lat'] - 0.00004,
-                latitude: location['lng'] - 0.00004,
-                address: '10981 Whilshire Blvd',
-                distance: '122 ft'
-            },
-            {
-                plate: '3333333',
-                longitude: location['lat'] - 0.00004,
-                latitude: location['lng'] + 0.00004,
-                address: '10982 Westwood Plaza',
-                distance: '1 mile'
-            },
-            {
-                plate: '4444444',
-                longitude: location['lat'] + 0.00004,
-                latitude: location['lng'] - 0.00004,
-                address: '103 Ohio Ave',
-                distance: '1.5 mile',
-            }
-        ]
-    };
-    return callback(payload);
-
+    fetch(
+        `${BASE_URL}/parkingSpace/request/${userId}`,
+        {
+            method: "PUT",
+            headers: HEADERS,
+            body: JSON.stringify({
+                access_token: accessToken,
+                latitude: location.lat,
+                longitude: location.lng
+            })
+        }
+    )
+        .then(ApiUtils.checkStatus)
+        .then(response  => response.json())
+        .then(responseJson => {
+            const available_parking_spaces = responseJson['available_parking_spaces'];
+            const res = available_parking_spaces.map((space) => {
+                if (space.address) {
+                    space['address'] = space.address.split(',')[0];
+                }
+                return space
+            });
+            return callback({
+                availableParkingSpaces: res
+            })
+        })
+        .catch((error) =>
+            callback({error: error})
+        )
 };
 
 const reserveParkingSpace = (
@@ -198,28 +201,32 @@ const reserveParkingSpace = (
     plate,
     callback
 ) => {
-    console.log('reserveParkingSpace not implement');
-    const payload = {
-        reservation: {
-            parkingSpace: {
-                "plate": "1234567",
-                "latitude": 54.123,
-                "longitude": 54.123,
-                "address": 'ucla parking lot 7'
-
-            },
-            vehicle: {
-                "plate": "1234567",
-                "model": "civic",
-                "brand": "honda",
-                "color": "white",
-                "year": "year",
-            }
+    fetch(
+        `${BASE_URL}/parkingSpace/reserve/${userId}`,
+        {
+            method: "POST",
+            headers: HEADERS,
+            body: JSON.stringify({
+                access_token: accessToken,
+                plate: plate
+            })
         }
-    };
-
-    return callback(payload)
-};
+    )
+        .then(ApiUtils.checkStatus)
+        .then(response  => response.json())
+        .then(responseJson => {
+            const parkingSpace = responseJson['parking_space'];
+            const vehicle = responseJson['vehicle'];
+            return callback({
+                reservation: {
+                    parkingSpace,
+                    vehicle
+                }
+            });
+        })
+        .catch((error) =>
+            callback({error: error})
+        );};
 
 const checkin = (
     userId,
@@ -229,28 +236,57 @@ const checkin = (
     callback
 ) => {
     console.log('checkin not implement');
-    location = {'longitude': 43.123, 'latitude': 54.123};
-    const payload = {
-        "parkingSpace": {
-            "plate": "123456",
-            "longitude": location['longitude'],
-            "latitude": location['latitude'],
-            "address": "ucla parking lot 7"
+    fetch(
+        `${BASE_URL}/parkingSpace/checkin/${userId}`,
+        {
+            method: "PUT"
+            ,
+            headers: HEADERS,
+            body: JSON.stringify({
+                access_token: accessToken,
+                plate: plate,
+                longitude: location.lng,
+                latitude: location.lat,
+            })
         }
-    };
-    return callback(payload);
+    )
+        .then(ApiUtils.checkStatus)
+        .then(response  => response.json())
+        .then(responseJson => {
+            const parkingSpace = responseJson.parking_space;
+            return callback({
+                parkingSpace
+            });
+        })
+        .catch((error) =>
+            callback({error: error})
+        );
 };
 
 const checkout = (
     userId,
     accessToken,
     plate,
-    location,
     callback
 ) => {
-    console.log('checkin not implement');
-    const payload = {};
-    return callback(payload);
+    console.log('checkout not implement');
+    fetch(
+        `${BASE_URL}/parkingSpace/checkout/${userId}`,
+        {
+            method: "POST"
+            ,
+            headers: HEADERS,
+            body: JSON.stringify({
+                access_token: accessToken,
+                plate: plate,
+            })
+        }
+    )
+        .then(ApiUtils.checkStatus)
+        .then(() => callback({}))
+        .catch((error) =>
+            callback({error: error})
+        );
 };
 
 const postParkingSpace = (
@@ -260,16 +296,30 @@ const postParkingSpace = (
     callback
 ) => {
     console.log('post parking space not implement');
-    const payload = {
-        "plate": "1111111",
-        "parking_space": {
-            "plate": "1234567",
-            "latitude": 12.123,
-            "longitude": 20.144,
-            "address": "parking lot 7"
+    fetch(
+        `${BASE_URL}/parkingSpace/post/${userId}`,
+        {
+            method: "PUT"
+            ,
+            headers: HEADERS,
+            body: JSON.stringify({
+                access_token: accessToken,
+                plate: plate,
+            })
         }
-    };
-    return callback(payload);
+    )
+        .then(ApiUtils.checkStatus)
+        .then(response  => response.json())
+        .then(responseJson => {
+            const parkingSpace = responseJson['parking_space'];
+            callback({
+                plate,
+                parkingSpace
+            })
+        })
+        .catch((error) =>
+            callback({error: error})
+        );
 };
 
 
@@ -281,5 +331,6 @@ export default {
     reserveParkingSpace,
     checkin,
     checkout,
-    postParkingSpace
+    postParkingSpace,
+    activeVehicle,
 }

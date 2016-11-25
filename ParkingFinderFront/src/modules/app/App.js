@@ -89,18 +89,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   requestButtonItem: {
-    marginTop:10,
-    width:350,
-    height:45,
-    backgroundColor: '#696969',
+    borderColor: '#6B6B76',
+    backgroundColor: '#F9F9F9',
+    borderRadius: 4,
+    borderWidth: 1,
+    width: 160,
+    marginRight: 5,
   },
   requestButton: {
-    fontSize: 20,
-    fontWeight: 'normal',
-    color:'white',
-    flexDirection: 'row',
-    paddingTop: 10,
+    color: '#6B6B76',
+    fontFamily: 'Helvetica',
+    paddingTop: 5,
+    paddingBottom: 5,
     textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'normal',
+    flexDirection: 'row',
   },
   emptyPage: {
     flex: 1,
@@ -208,7 +212,6 @@ const App = (props) => {
     vehicleListVisible,
     closeModal,
     openModal,
-    navigator,
     accessToken,
     onFBLogin,
     onLogout,
@@ -238,6 +241,10 @@ const App = (props) => {
     selectedLng,
     selectedLat,
     loadingAvailableParkingSpaces,
+    updateCurrentLocation,
+    navigation,
+    markers,
+    cameraLatLng,
   } = props;
 
   if (!accessToken) {
@@ -246,34 +253,21 @@ const App = (props) => {
 
   }
 
-  if (user && !user.activated) {
+  if (user && !user.activated_vehicle) {
     // user have to activate current using vehicle
   }
 
-  let markers = [];
-  let cameraPosition = {auto: true, zoom: 15};
-  if(location) {
-    markers = [
-            {
-            id: 'marker-100',
-            latitude: location.lat,
-            longitude: location.lng,
-            },   
-            ];
-    cameraPosition = {latitude: location.lat, longitude: location.lng, zoom: 15}
+  let cameraPosition = {};
+  if (cameraLatLng && cameraLatLng.longitude) {
+    cameraPosition = {auto: false, latitude: cameraLatLng.latitude, longitude: cameraLatLng.longitude, zoom: 17};
+  }
+  else {
+      cameraPosition = {auto: false, zoom: 18};
   }
 
-  if(selectedLng && selectedLat) {
-        markers = [
-            {
-            id: 'marker-100',
-            latitude: selectedLat,
-            longitude: selectedLng,
-            },   
-            ];
-    cameraPosition = {latitude: selectedLat, longitude: selectedLng, zoom: 15}
-  }
-
+  navigator.geolocation.watchPosition((_location) => {
+      updateCurrentLocation(_location);
+  });
   let mainButton;
   console.log(mainButtonStatus);
   switch(mainButtonStatus) {
@@ -282,7 +276,14 @@ const App = (props) => {
     mainButton = (
     <View style={styles.footerContainer}>
     <View style={styles.buttonGroupStyle}>
-    <TouchableOpacity style={styles.requestButtonItem} onPress={showParkingList(user.userId, accessToken.accessToken)}>
+      <TouchableOpacity style={styles.checkInStyle} onPress={() => {
+        checkin(user.userId, accessToken.accessToken, location, user.activatedVehicle)
+    }}>
+        <Text style={styles.checkInTextStyle}>Check In</Text>
+      </TouchableOpacity>
+    <TouchableOpacity style={styles.requestButtonItem} onPress={() => {
+        showParkingList(user.userId, accessToken.accessToken, location)
+    }}>
     <Text style={styles.requestButton}>AVAILABLE PARKING</Text>
     </TouchableOpacity>
     </View>
@@ -294,7 +295,9 @@ const App = (props) => {
     mainButton = (
     <View style={styles.footerContainer}>
     <View style={styles.buttonGroupStyle}>
-    <TouchableOpacity style={styles.checkInStyle} onPress={(location) => checkin(user.userId, accessToken.accessToken)(location, user.activatedVehicle)}>
+    <TouchableOpacity style={styles.checkInStyle} onPress={() => {
+        checkin(user.userId, accessToken.accessToken, location, user.activatedVehicle)
+    }}>
         <Text style={styles.checkInTextStyle}>Check In</Text>
     </TouchableOpacity>
     <TouchableOpacity style={styles.cancelStyle} onPress={cancelRequest}>
@@ -351,7 +354,7 @@ const App = (props) => {
            <Mask visible={isOpen}/>           
           <GoogleMap
             style={styles.map}
-            cameraPosition={cameraPosition}
+            cameraPosition={{latitude: cameraPosition.latitude, longitude: cameraPosition.longitude, zoom: cameraPosition.zoom, auto: cameraPosition.auto}}
             showsUserLocation={true}
             scrollGestures={true}
             zoomGestures={true}
@@ -439,6 +442,7 @@ App.propTypes = {
   checkout: PropTypes.func.isRequired,
   onVehicleListEntryClicked: PropTypes.func.isRequired,
   loadingAvailableParkingSpaces: PropTypes.bool,
+  markers: PropTypes.array,
 };
 
 export default connect(
@@ -466,10 +470,12 @@ export default connect(
     selectedLng: state.app.selectedLng,
     selectedLat: state.app.selectedLat,
     loadingAvailableParkingSpaces: state.app.loadingAvailableParkingSpaces,
+    markers: state.app.markers,
+    cameraLatLng: state.app.cameraLatLng,
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
-    showParkingList: (userId, accessToken) => (location) => actions.showParkingList(userId, accessToken, location, dispatch),
+    showParkingList: (userId, accessToken, location) => actions.showParkingList(userId, accessToken, location, dispatch),
     hideParkingList: () => dispatch(actions.hideParkingList()),
     onMenuItemSelected: (item) => dispatch(actions.selectMenu(item)),
     updateMenuState: (isOpen) => dispatch(actions.updateMenu(isOpen)),
@@ -488,9 +494,11 @@ export default connect(
     closeSearch: (userId, accessToken) => (name, location)=> actions.closeSearch(userId, accessToken, name, location, dispatch),
     selectParkingItem: (userId, accessToken) => (plate)=> actions.selectParkingItem(userId, accessToken, plate, dispatch),
     cancelRequest: () => dispatch(actions.cancelRequest()),
-    checkin: (userId, accessToken) => (location, plate) => actions.checkin(userId, accessToken, plate, location, dispatch),
+    checkin: (userId, accessToken, location, plate) => actions.checkin(userId, accessToken, plate, location, dispatch),
     checkout: (userId, accessToken)=> (plate) => actions.checkout(userId, accessToken, plate, dispatch),
     findMyVehicle: (userId, accessToken) => (plate) => actions.findMyVehicle(userId, accessToken, plate, dispatch),
-    onVehicleListEntryClicked: (userId, accessToken) => (plate) => actions.activeVehicle(userId, accessToken, plate, dispatch)
+    onVehicleListEntryClicked: (userId, accessToken) => (plate) => actions.activeVehicle(userId, accessToken, plate, dispatch),
+    updateCurrentLocation: (location) => dispatch(actions.updateCurrentLocation(location)),
+    updateMarkers: (key, location) => actions.updateMarkers(key, location, dispatch),
   })
 )(App)
