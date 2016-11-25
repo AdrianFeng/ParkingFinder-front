@@ -20,6 +20,10 @@ import {
 	CHECKIN,
 	FINDMYVEHICLE,
 	CHECKOUT,
+	DISPLAY_AVAILABLE_PARKING_SPACES,
+	REQUEST_PARKING_SPACES,
+	SAVE_TO_HISTORY,
+	ACTIVE_VEHICLE
 } from './constants'
 
 
@@ -28,10 +32,10 @@ import React, {
 } from 'react-native';
 
 const defaultParking = [
-                    {address: '10980 Wellworth ave', distance: '100 ft', longitude: -118.4453886, latitude: 34.0561251},
-                    {address: '10981 Whilshire Blvd', distance: '122 ft', longitude: -118.4472583, latitude: 34.0579264},
-                    {address: '10982 Westwood Plaza', distance: '1 mile', longitude: -118.4448444, latitude: 34.0693954},
-                    {address: '103 Ohio Ave', distance: '1.5 mile', longitude: -118.4484161, latitude: 34.0493621},
+                    {address: '10980 Wellworth ave', distance: '100 ft', longitude: -118.4453886, latitude: 34.0561251, plate: '6DAY434'},
+                    {address: '10981 Whilshire Blvd', distance: '122 ft', longitude: -118.4472583, latitude: 34.0579264, plate: '6DAY444'},
+                    {address: '10982 Westwood Plaza', distance: '1 mile', longitude: -118.4448444, latitude: 34.0693954, plate: '6DAY454'},
+                    {address: '103 Ohio Ave', distance: '1.5 mile', longitude: -118.4484161, latitude: 34.0493621, plate: '6DAY464'},
                 ];
 const defaultHistory = [
                     {address: '10980 Wellworth ave', date: '11/11/16, 6:27 PM', longitude: '32.47', latitude: '-107.85'},
@@ -39,7 +43,7 @@ const defaultHistory = [
                     {address: '10982 Westwood Plaza', date: '11/11/16, 6:27 AM', longitude: '34.47', latitude: '-107.85'},
                     {address: '10983 Ohio Street', date: '11/11/16, 5:27 PM', longitude: '35.47', latitude: '-102.85'},
                 ];
-const defaultDataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+let defaultDataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 defaultDataSource = defaultDataSource.cloneWithRows(defaultParking);
 
 const initialState = {
@@ -57,9 +61,10 @@ const initialState = {
     searchVisible: false,
     destination: "Enter Destination",
    	location: null,
-   	selectedLong: null,
-   	selectedLa: null,
+   	selectedLng: null,
+   	selectedLat: null,
    	mainButtonStatus:1,
+	dataSource: defaultDataSource
 };
 
 export default handleActions({
@@ -259,42 +264,163 @@ export default handleActions({
 	},
 	[SELECTPARKINGITEM]: (state, action) => {
 		const { payload } = action;
-		console.log(payload.selectedLong);
-		console.log(payload.selectedLa);
-		return {
-			...state,
-			selectedLong: payload.selectedLong,
-			selectedLa: payload.selectedLa,
-			mainButtonStatus:2,
-			AvailabeParkingListVisible: false,
+		if (payload.error) {
+			return {
+				...state,
+				navigation: null,
+				displayNavigation: false,
+				AvailableParkingListVisible: true,
+				error: payload.error
+			}
+		}
+		else {
+			return {
+				...state,
+				navigation: {
+					vehicle: payload.reservation.vehicle,
+					parkingSpace: payload.reservation.parkingSpace,
+				},
+				mainButtonStatus:2,
+				displayNavigation: true,
+				AvailabeParkingListVisible: false,
+			}
 		}
 	},
 	[CANCELREQUEST]: (state, action) => {
 		return {
 			...state,
-			selectedLong: null,
-			selectedLa: null,
+			selectedLng: null,
+			selectedLat: null,
 			mainButtonStatus:1,
 		}
 	},
 	[CHECKIN]: (state, action) => {
-		return {
-			...state,
-			mainButtonStatus:3,
+        const { payload } = action;
+        if (payload.error) {
+			console.log('UNCAUGHT Exception reducer: checkin' + payload.error);
+            return {
+				...state,
+			}
+		}
+		else {
+            const parkingLot = state.parkingLot || {};
+			const parkingSpace = payload.parkingSpace;
+			parkingLot[parkingSpace.plate] = parkingSpace;
+
+			return {
+				...state,
+				navigation: null,
+				parkingLot,
+				displayNavigation: false,
+				mainButtonStatus:3,
+			}
 		}
 	},
 	[FINDMYVEHICLE]: (state, action) => {
-		return {
-			...state,
-			mainButtonStatus:4,
+		const { payload } = action;
+		if (payload.error) {
+			return {
+				...state,
+				error: payload.error
+			}
+		}
+		else {
+			const plate = payload.plate;
+            const parkingSpace = state.parkingLot[plate];
+			return {
+				...state,
+				navigation: {
+					parkingSpace
+				},
+				displayNavigation: true,
+				mainButtonStatus:4,
+			}
 		}
 	},
 	[CHECKOUT]: (state, action) => {
+		const { payload } = action;
+		const parkingLot = state.parkingLot || {};
+        delete parkingLot[payload.plate];
 		return {
 			...state,
-			selectedLong: null,
-			selectedLa: null,
+            parkingLot,
+			navigation: null,
+			displayNavigation: false,
 			mainButtonStatus:1,
 		}
 	},
+	[DISPLAY_AVAILABLE_PARKING_SPACES]: (state, action) => {
+		const payload = action.payload;
+		if (payload.error) {
+			return {
+				...state,
+				availableParkingSpaces: [],
+				error: action.error.message
+			}
+		}
+		else {
+            const availableParkingSpaces = payload.availableParkingSpaces;
+			return {
+				...state,
+                availableParkingSpaces,
+			}
+		}
+	},
+	[REQUEST_PARKING_SPACES]: (state, action) => {
+		// TODO if user terminate the service, do not modify states
+		const payload = action.payload;
+		let dataSource = [];
+		if (!(action.error || payload.loadingAvailableParkingSpaces) && payload.availableParkingSpaces) {
+            dataSource = payload.availableParkingSpaces || [];
+		}
+
+		dataSource = defaultDataSource.cloneWithRows(dataSource);
+		if (payload.loadingAvailableParkingSpaces) {
+			return {
+				...state,
+				loadingAvailableParkingSpaces: true,
+                dataSource: dataSource,
+				AvailabeParkingListVisible: true
+			}
+		}
+		else if (payload.error) {
+			return {
+				...state,
+				dataSource: dataSource,
+				error: action.error.message
+			}
+		}
+		else {
+			return {
+				...state,
+				dataSource: dataSource,
+			}
+		}
+	},
+	[SAVE_TO_HISTORY]: (state, action) => {
+		console.log('reducer:SAVE_TO_HISTORY not implement')
+        return {
+			...state,
+		}
+	},
+	[ACTIVE_VEHICLE]: (state, action) => {
+		const { payload } = action;
+
+        if (payload.error) {
+            return {
+				...state,
+				error: payload.error
+			}
+		}
+		else {
+			const user = state.user;
+			user.update({
+				activated_vehicle: payload.activated_vehicle
+			});
+			return {
+				...state,
+				user
+			};
+		}
+	}
 }, initialState)

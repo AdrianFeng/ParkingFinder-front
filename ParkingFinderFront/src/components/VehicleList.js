@@ -12,7 +12,7 @@ const VehicleList = (props) => {
     if (vehicles) {
         components = _vehicles.map((vehicle) => (
             <View key = {vehicle.plate}>
-                <VehicleEntry vehicle={vehicle} onEntryPressed={() => onEntryClicked(vehicle)}/>
+                <VehicleEntry vehicle={vehicle} onEntryPressed={() => onEntryClicked(vehicle.plate)}/>
             </View>
         ))
     }

@@ -235,8 +235,8 @@ const App = (props) => {
     checkin,
     findMyVehicle,
     checkout,
-    selectedLong,
-    selectedLa,
+    selectedLng,
+    selectedLat,
   } = props;
 
   if (!accessToken) {
@@ -262,15 +262,15 @@ const App = (props) => {
     cameraPosition = {latitude: location.lat, longitude: location.lng, zoom: 15}
   }
 
-  if(selectedLong && selectedLa) {
+  if(selectedLng && selectedLat) {
         markers = [
             {
             id: 'marker-100',
-            latitude: selectedLa,
-            longitude: selectedLong,
+            latitude: selectedLat,
+            longitude: selectedLng,
             },   
             ];
-    cameraPosition = {latitude: selectedLa, longitude: selectedLong, zoom: 15}
+    cameraPosition = {latitude: selectedLat, longitude: selectedLng, zoom: 15}
   }
 
   let mainButton;
@@ -281,7 +281,7 @@ const App = (props) => {
     mainButton = (
     <View style={styles.footerContainer}>
     <View style={styles.buttonGroupStyle}>
-    <TouchableOpacity style={styles.requestButtonItem} onPress={showParkingList}>
+    <TouchableOpacity style={styles.requestButtonItem} onPress={showParkingList(user.userId, accessToken.accessToken)}>
     <Text style={styles.requestButton}>AVAILABLE PARKING</Text>
     </TouchableOpacity>
     </View>
@@ -293,7 +293,7 @@ const App = (props) => {
     mainButton = (
     <View style={styles.footerContainer}>
     <View style={styles.buttonGroupStyle}>
-    <TouchableOpacity style={styles.checkInStyle} onPress={checkin}>
+    <TouchableOpacity style={styles.checkInStyle} onPress={(location) => checkin(user.userId, accessToken.accessToken)(location, user.activatedVehicle)}>
         <Text style={styles.checkInTextStyle}>Check In</Text>
     </TouchableOpacity>
     <TouchableOpacity style={styles.cancelStyle} onPress={cancelRequest}>
@@ -308,7 +308,7 @@ const App = (props) => {
     mainButton = (
     <View style={styles.footerContainer}>
     <View style={styles.buttonGroupStyle}>
-    <TouchableOpacity style={styles.requestButtonItem} onPress={findMyVehicle}>
+    <TouchableOpacity style={styles.requestButtonItem} onPress={() => findMyVehicle(user.userId, accessToken.accessToken)(user.activatedVehicle)}>
     <Text style={styles.requestButton}>Find My Vehicle</Text>
     </TouchableOpacity>
     </View>
@@ -320,7 +320,7 @@ const App = (props) => {
     mainButton = (
     <View style={styles.footerContainer}>
     <View style={styles.buttonGroupStyle}>
-    <TouchableOpacity style={styles.requestButtonItem} onPress={checkout}>
+    <TouchableOpacity style={styles.requestButtonItem} onPress={() => checkout(user.userId, accessToken.accessToken)(user.activatedVehicle)}>
     <Text style={styles.requestButton}>CHECK OUT</Text>
     </TouchableOpacity>
     </View>
@@ -343,7 +343,7 @@ const App = (props) => {
         isOpen={isOpen}
         onChange={(isOpen) => updateMenuState(isOpen)}>
         <View style={styles.container}>
-        <GoogleAutocomplete visible={searchVisible} requestClose={closeSearch}/>
+        <GoogleAutocomplete visible={searchVisible} requestClose={closeSearch(user.userId, accessToken.accessToken)}/>
           <TouchableOpacity style={styles.searchBar} onPress={showSearch}>
             <Text style={styles.searchBarButton}>{destination}</Text>
           </TouchableOpacity>
@@ -379,16 +379,16 @@ const App = (props) => {
             <VehicleList
                 visible={vehicleListVisible}
                 vehicles={user.ownedVehicles}
-                onEntryClicked={onVehicleListEntryClicked}
+                onEntryClicked={onVehicleListEntryClicked(user.userId, accessToken.accessToken)}
                 requestClose={closeModal}
                 onClicked={onRegisterVehicleButtonClicked}
             />
           <AvailableParkingList
                  visible={AvailabeParkingListVisible}
                  requestClose={hideParkingList}
-                 loadParkingList={loadParkingList}
+                 loadParkingList={loadParkingList(user.userId, accessToken.accessToken)}
                  dataSource={dataSource}
-                 selectParkingItem={selectParkingItem}/>
+                 selectParkingItem={selectParkingItem(user.userId, accessToken.accessToken)}/>
         </View>
         <MenuButton onClick={toggle}>
           <Image
@@ -435,6 +435,7 @@ App.propTypes = {
   checkin: PropTypes.func.isRequired,
   findMyVehicle: PropTypes.func.isRequired,
   checkout: PropTypes.func.isRequired,
+  onVehicleListEntryClicked: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -459,12 +460,12 @@ export default connect(
     destination: state.app.destination,
     location: state.app.location,
     mainButtonStatus: state.app.mainButtonStatus,
-    selectedLong: state.app.selectedLong,
-    selectedLa: state.app.selectedLa,
+    selectedLng: state.app.selectedLng,
+    selectedLat: state.app.selectedLat,
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
-    showParkingList: () => dispatch(actions.showParkingList()),
+    showParkingList: (userId, accessToken) => (location) => actions.showParkingList(userId, accessToken, location, dispatch),
     hideParkingList: () => dispatch(actions.hideParkingList()),
     onMenuItemSelected: (item) => dispatch(actions.selectMenu(item)),
     updateMenuState: (isOpen) => dispatch(actions.updateMenu(isOpen)),
@@ -477,14 +478,15 @@ export default connect(
         (user, accessToken, data) =>
           actions.onRegisterVehicleSubmit(user.userId, accessToken, data,dispatch),
     onRegisterVehicleButtonClicked: () => dispatch(actions.openRegisterVehicleForm()),
-    loadParkingList: () => dispatch(actions.loadParkingList()),
+    loadParkingList: () => (userId, accessToken) => (location) => actions.loadParkingList(userId, accessToken, location),
     loadHistoryList: () => dispatch(actions.loadHistoryList()),
     showSearch: ()=> dispatch(actions.showSearch()),
-    closeSearch: (name, location )=> dispatch(actions.closeSearch(name, location)),
-    selectParkingItem: (selectedLong, selectedLa) => dispatch(actions.selectParkingItem(selectedLong, selectedLa)),
+    closeSearch: (userId, accessToken) => (name, location)=> actions.closeSearch(userId, accessToken, name, location, dispatch),
+    selectParkingItem: (userId, accessToken) => (plate)=> actions.selectParkingItem(userId, accessToken, plate, dispatch),
     cancelRequest: () => dispatch(actions.cancelRequest()),
-    checkin: ()=> dispatch(actions.checkin()),
-    checkout: ()=> dispatch(actions.checkout()),
-    findMyVehicle: () => dispatch(actions.findMyVehicle()),
+    checkin: (userId, accessToken) => (location, plate) => actions.checkin(userId, accessToken, plate, location, dispatch),
+    checkout: (userId, accessToken)=> (plate) => actions.checkout(userId, accessToken, plate, dispatch),
+    findMyVehicle: (userId, accessToken) => (plate) => actions.findMyVehicle(userId, accessToken, plate, dispatch),
+    onVehicleListEntryClicked: (userId, accessToken) => (plate) => actions.activeVehicle(userId, accessToken, plate, dispatch)
   })
 )(App)
