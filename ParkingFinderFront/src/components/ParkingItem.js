@@ -7,18 +7,18 @@ import GoogleMap  from 'react-native-maps-google';
 const ParkingItem = (props) => {
 
   const { plate, longitude, latitude, address, distance , selectParkingItem } = props;
-  console.log(address)
   return (
     <View style={styles.mainViewContainer}>
     <GoogleMap
-    cameraPosition={{latitude: latitude, longitude: longitude, zoom: 3}}
+    cameraPosition={{auto: false, latitude: latitude, longitude: longitude, zoom: 15}}
     style={styles.map}
     markers={[
       {
-        id: address,
+        id: plate,
         latitude: latitude,
         longitude: longitude,
-      },]}
+      },
+    ]}
       />
     <View style={styles.textViewContainer}>
     <Text style={styles.textStyle}>{address}</Text>

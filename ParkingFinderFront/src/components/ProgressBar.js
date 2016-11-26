@@ -12,9 +12,16 @@ var TimerMixin = require('react-timer-mixin');
 var ProgressBar = React.createClass({
   mixins: [TimerMixin],
 
+
   getInitialState() {
+    const start = new Date();
+    const end = new Date(start);
+    end.setSeconds(end.getSeconds() + 15);
     return {
       progress: 0,
+      start,
+      end,
+      stop: false
     };
   },
 
@@ -23,18 +30,27 @@ var ProgressBar = React.createClass({
   },
 
   updateProgress() {
-    console.log(this.state.progress % Math.PI);
-    if(this.state.progress % Math.PI >= (Math.PI /2)) {
-      this.setState({ progress: 0 });
+    const now = new Date();
+
+    const progress = (this.state.end - now) / (this.state.end - this.state.start);
+    if (progress < 0 && !this.state.stop) {
       this.props.callback();
+      if (this.props.reload) {
+          const start = new Date();
+          const end = new Date(start);
+          this.setState({ end, start, stop: false });
+      }
+      else {
+          this.setState({ stop: true });
+      }
     } else {
-      this.setState({ progress: this.state.progress + 0.1 });
+      this.setState({ progress: progress });
     }
     this.requestAnimationFrame(() => this.updateProgress());
   },
 
   getProgress() {
-    return Math.sin(this.state.progress % Math.PI);
+    return this.state.progress;
   },
 
   render() {

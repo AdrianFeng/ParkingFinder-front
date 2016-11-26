@@ -17,7 +17,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [PPTGoogleMapProvider provideAPIKey:nil];
+  [PPTGoogleMapProvider provideAPIKey:@"AIzaSyDF1fAWMOue7L7cHX0qCAjD5fH8n417vEA"];
   [[FBSDKApplicationDelegate sharedInstance] application:application
                            didFinishLaunchingWithOptions:launchOptions];
   NSURL *jsCodeLocation;

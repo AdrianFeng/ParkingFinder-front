@@ -23,7 +23,11 @@ import {
 	DISPLAY_AVAILABLE_PARKING_SPACES,
 	REQUEST_PARKING_SPACES,
 	SAVE_TO_HISTORY,
-	ACTIVE_VEHICLE
+	ACTIVE_VEHICLE,
+	UPDATE_CURRENT_LOCATION,
+	POST_PARKING_SPACE,
+	CLEAR_ERROR,
+	LOGOUT
 } from './constants'
 
 
@@ -38,13 +42,11 @@ const defaultParking = [
                     {address: '103 Ohio Ave', distance: '1.5 mile', longitude: -118.4484161, latitude: 34.0493621, plate: '6DAY464'},
                 ];
 const defaultHistory = [
-                    {address: '10980 Wellworth ave', date: '11/11/16, 6:27 PM', longitude: '32.47', latitude: '-107.85'},
-                    {address: '10981 Whilshire ave', date: '11/11/16, 11:11 PM', longitude: '33.47', latitude: '-104.85'},
-                    {address: '10982 Westwood Plaza', date: '11/11/16, 6:27 AM', longitude: '34.47', latitude: '-107.85'},
-                    {address: '10983 Ohio Street', date: '11/11/16, 5:27 PM', longitude: '35.47', latitude: '-102.85'},
                 ];
 let defaultDataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 defaultDataSource = defaultDataSource.cloneWithRows(defaultParking);
+let historyDefaultDataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+historyDefaultDataSource = historyDefaultDataSource.cloneWithRows(defaultParking);
 
 const initialState = {
 	isOpen: false,
@@ -64,7 +66,9 @@ const initialState = {
    	selectedLng: null,
    	selectedLat: null,
    	mainButtonStatus:1,
-	dataSource: defaultDataSource
+	dataSource: defaultDataSource,
+    dataSourceHistory: historyDefaultDataSource,
+	markers: [],
 };
 
 export default handleActions({
@@ -164,7 +168,7 @@ export default handleActions({
 		if (payload.error) {
 			return {
 				...state,
-				error: payload.error.message,
+				error: payload.error,
 				accessToken: null,
 			}
 		} else {
@@ -206,15 +210,16 @@ export default handleActions({
 		}
 	},
 	[REGISTERVEHICLE]: (state, action) => {
-		if (action.error) {
-			alert(state.error);
+	    const { payload } = action;
+		if (payload.error) {
 			return {
 				...state,
+                error: payload.error
 			}
 		} else {
 			const ownedVehicles = state.user.ownedVehicles || [];
-			if (action.payload.vehicle) {
-				ownedVehicles.push(action.payload.vehicle);
+			if (payload.vehicle) {
+				ownedVehicles.push(payload.vehicle);
 			}
 			const user = Object.assign(state.user, {
 				ownedVehicles
@@ -259,30 +264,46 @@ export default handleActions({
 			...state,
 			searchVisible: false,
 			destination: payload.name,
-			location: payload.location,
+			cameraLatLng: {
+				longitude: payload.location.lng,
+				latitude: payload.location.lat,
+				zoom: 18
+			}
 		}
 	},
 	[SELECTPARKINGITEM]: (state, action) => {
 		const { payload } = action;
 		if (payload.error) {
+            const dataSource = defaultDataSource.cloneWithRows([]);
 			return {
 				...state,
 				navigation: null,
 				displayNavigation: false,
 				AvailableParkingListVisible: true,
+				dataSource,
 				error: payload.error
 			}
 		}
 		else {
+            const markers = [];
+            const { reservation } = payload;
+		    markers.push({
+		    	id: reservation.parkingSpace.plate,
+		    	latitude: reservation.parkingSpace.latitude,
+				longitude: reservation.parkingSpace.longitude
+			});
+
 			return {
 				...state,
 				navigation: {
-					vehicle: payload.reservation.vehicle,
-					parkingSpace: payload.reservation.parkingSpace,
+					vehicle: reservation.vehicle,
+					parkingSpace: reservation.parkingSpace,
 				},
+				markers,
 				mainButtonStatus:2,
 				displayNavigation: true,
 				AvailabeParkingListVisible: false,
+				cameraLatLng: null
 			}
 		}
 	},
@@ -297,9 +318,9 @@ export default handleActions({
 	[CHECKIN]: (state, action) => {
         const { payload } = action;
         if (payload.error) {
-			console.log('UNCAUGHT Exception reducer: checkin' + payload.error);
             return {
 				...state,
+                error: payload.error
 			}
 		}
 		else {
@@ -313,7 +334,14 @@ export default handleActions({
 				parkingLot,
 				displayNavigation: false,
 				mainButtonStatus:3,
+				markers: [],
+				cameraLatLng: null
 			}
+		}
+	},
+	[POST_PARKING_SPACE]: (state, action) => {
+		return {
+			...state
 		}
 	},
 	[FINDMYVEHICLE]: (state, action) => {
@@ -321,17 +349,32 @@ export default handleActions({
 		if (payload.error) {
 			return {
 				...state,
-				error: payload.error
+				error: payload.error,
+				mainButtonStatus: 4
 			}
 		}
 		else {
+
 			const plate = payload.plate;
             const parkingSpace = state.parkingLot[plate];
+            const markers = [];
+            markers.push({
+            	id: parkingSpace.plate,
+				latitude: parkingSpace.latitude,
+				longitude: parkingSpace.longitude
+			});
+            const cameraLatLng = {
+                latitude: parkingSpace.latitude,
+                longitude: parkingSpace.longitude,
+                zoom: 17
+			};
 			return {
 				...state,
 				navigation: {
 					parkingSpace
 				},
+				markers,
+				cameraLatLng,
 				displayNavigation: true,
 				mainButtonStatus:4,
 			}
@@ -344,6 +387,8 @@ export default handleActions({
 		return {
 			...state,
             parkingLot,
+			cameraLatLng: null,
+			markers: [],
 			navigation: null,
 			displayNavigation: false,
 			mainButtonStatus:1,
@@ -355,15 +400,35 @@ export default handleActions({
 			return {
 				...state,
 				availableParkingSpaces: [],
-				error: action.error.message
+				error: action.error
 			}
 		}
 		else {
-            const availableParkingSpaces = payload.availableParkingSpaces;
-			return {
-				...state,
-                availableParkingSpaces,
+
+		    const markers = payload.availableParkingSpaces.map((parkingSpace, id) => {
+		    	return {
+		    		id: '' + id,
+					latitude: parkingSpace.latitude,
+					longitude: parkingSpace.longitude
+				}
+			});
+		    let cameraLatLng = null;
+		    if (payload.availableParkingSpaces && payload.availableParkingSpaces.length > 0) {
+		    	cameraLatLng = {
+		    		latitude: payload.availableParkingSpaces[0].latitude,
+					longitude: payload.availableParkingSpaces[0].longitude,
+					zoom: 18
+				}
 			}
+
+			const _state = {
+				...state,
+                markers,
+			}
+			if (cameraLatLng) {
+		    	_state['cameraLatLng'] = cameraLatLng;
+			}
+			return _state;
 		}
 	},
 	[REQUEST_PARKING_SPACES]: (state, action) => {
@@ -387,20 +452,43 @@ export default handleActions({
 			return {
 				...state,
 				dataSource: dataSource,
-				error: action.error.message
+                loadingAvailableParkingSpaces: false,
+                AvailabeParkingListVisible: true,
+				error: action.error
 			}
 		}
 		else {
 			return {
 				...state,
+                loadingAvailableParkingSpaces: false,
 				dataSource: dataSource,
 			}
 		}
 	},
 	[SAVE_TO_HISTORY]: (state, action) => {
-		console.log('reducer:SAVE_TO_HISTORY not implement')
+        const payload = action.payload;
+        if (payload.error) {
+            return {
+                ...state,
+                error: payload.error
+            }
+        }
+        else if (payload.parkingSpace){
+            const historyDataSource = state.historyDataSource || [];
+            const parkingSpace = payload.parkingSpace;
+            parkingSpace['date'] = new Date().toUTCString();
+            historyDataSource.push(payload.parkingSpace);
+            let dataSourceHistory = state.dataSourceHistory;
+            dataSourceHistory = dataSourceHistory.cloneWithRows(historyDataSource);
+
+            return {
+                ...state,
+				historyDataSource,
+                dataSourceHistory: dataSourceHistory,
+            }
+        }
         return {
-			...state,
+			...state
 		}
 	},
 	[ACTIVE_VEHICLE]: (state, action) => {
@@ -414,13 +502,33 @@ export default handleActions({
 		}
 		else {
 			const user = state.user;
-			user.update({
-				activated_vehicle: payload.activated_vehicle
-			});
+			user['activatedVehicle'] = payload.activatedVehicle;
 			return {
 				...state,
 				user
 			};
+		}
+	},
+	[UPDATE_CURRENT_LOCATION]: (state, action) => {
+		const { payload } = action;
+		return {
+			...state,
+			location: {
+				lng: payload.longitude,
+				lat: payload.latitude
+			}
+		}
+	},
+    [CLEAR_ERROR]: (state, action) => {
+        return {
+            ...state,
+			error: null
+        }
+    },
+    [LOGOUT]: (state, action) => {
+		return {
+			...state,
+            accessToken: null
 		}
 	}
 }, initialState)
