@@ -26,6 +26,8 @@ import {
     ACTIVE_VEHICLE,
     UPDATE_CURRENT_LOCATION,
     POST_PARKING_SPACE,
+    CLEAR_ERROR,
+    LOGOUT
 } from './constants'
 import api from './api/api'
 
@@ -35,13 +37,26 @@ export const toggleMenu = () => {
   }
 };
 
-export const selectMenu = (item) => {
-  return {
+export const selectMenu = (userId, accessToken, item, dispatch) => {
+  if (item == 'LOGOUT') {
+      api.logout(
+          userId,
+          accessToken,
+          ( ) => {
+              dispatch({
+                  type: LOGOUT,
+              })
+
+          }
+      )
+  }
+
+  dispatch({
     type: SELECTMENU,
     payload: {
     	item
     }
-  }
+  })
 };
 
 export const updateMenu = (isOpen) => {
@@ -337,5 +352,29 @@ export const updateCurrentLocation = (location) => {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude
         }
+    }
+};
+
+export const rejectAllParkingSpaces = (userId, accessToken, dispatch) => {
+    dispatch({
+        type: REQUEST_PARKING_SPACES,
+        payload: {loadingAvailableParkingSpaces : true},
+    });
+    api.rejectAllParkingSpaces(
+        userId,
+        accessToken,
+        ( payload ) => {
+            payload['loadingAvailableParkingSpaces'] = false;
+            dispatch({
+                type: REQUEST_PARKING_SPACES,
+                payload: payload,
+            });
+        }
+    );
+};
+
+export const clearError = () => {
+    return {
+        type: CLEAR_ERROR
     }
 };

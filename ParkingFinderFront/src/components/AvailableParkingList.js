@@ -39,6 +39,7 @@ export default class AvailableParkingList extends Component {
   }
 
   render() {
+    const reload = this.props.dataSource._cachedRowCount > 1;
     var header;
     if (this.props.loading) {
       header = (
@@ -49,7 +50,7 @@ export default class AvailableParkingList extends Component {
       header = (
       <View style={styles.headerContainer}>
       <Text style={styles.headerText}>AVAILABLE PARKING</Text>
-      <ProgressBar style={styles.ProgressBarStyle} callback={this.props.loadParkingList}/>
+      <ProgressBar style={styles.ProgressBarStyle} callback={this.props.rejectAllParkingSpaces} reload={reload}/>
       </View>)
     }
     return (

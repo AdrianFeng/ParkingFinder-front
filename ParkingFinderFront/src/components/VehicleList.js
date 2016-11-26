@@ -5,14 +5,14 @@ import Button from 'apsl-react-native-button';
 
 const VehicleList = (props) => {
 
-    const { visible, requestClose,  vehicles, onEntryClicked, onClicked } = props;
+    const { visible, requestClose,  vehicles, onEntryClicked, onClicked, activatedVehicle } = props;
     const _vehicles = vehicles || [];
 
     let components = [];
     if (vehicles) {
         components = _vehicles.map((vehicle) => (
             <View key = {vehicle.plate}>
-                <VehicleEntry vehicle={vehicle} onEntryPressed={() => onEntryClicked(vehicle.plate)}/>
+                <VehicleEntry vehicle={vehicle} activatedVehicle={activatedVehicle} onEntryPressed={() => onEntryClicked(vehicle.plate)}/>
             </View>
         ))
     }

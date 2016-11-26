@@ -245,7 +245,14 @@ const App = (props) => {
     navigation,
     markers,
     cameraLatLng,
+    error,
+    clearError,
+    rejectAllParkingSpaces
   } = props;
+  if (error) {
+    alert(error);
+    clearError();
+  }
 
   if (!accessToken) {
     LoginManager.logOut();
@@ -259,7 +266,7 @@ const App = (props) => {
 
   let cameraPosition = {};
   if (cameraLatLng && cameraLatLng.longitude) {
-    cameraPosition = {auto: false, latitude: cameraLatLng.latitude, longitude: cameraLatLng.longitude, zoom: 17};
+    cameraPosition = {auto: false, latitude: cameraLatLng.latitude, longitude: cameraLatLng.longitude, zoom: cameraLatLng.zoom};
   }
   else {
       cameraPosition = {auto: false, zoom: 18};
@@ -338,7 +345,7 @@ const App = (props) => {
   return (
       <SideMenu
         menu={<Menu
-            onItemSelected={onMenuItemSelected}
+            onItemSelected={onMenuItemSelected(user.userId, accessToken.accessToken)}
             userName={user.firstName + ' ' + user.lastName}
             userUrl={user.profilePictureUrl}
             popupModal={openModal}
@@ -383,6 +390,7 @@ const App = (props) => {
             <VehicleList
                 visible={vehicleListVisible}
                 vehicles={user.ownedVehicles}
+                activatedVehicle={user.activatedVehicle}
                 onEntryClicked={onVehicleListEntryClicked(user.userId, accessToken.accessToken)}
                 requestClose={closeModal}
                 onClicked={onRegisterVehicleButtonClicked}
@@ -392,6 +400,7 @@ const App = (props) => {
                  requestClose={hideParkingList}
                  loadParkingList={loadParkingList(user.userId, accessToken.accessToken)}
                  loading={loadingAvailableParkingSpaces}
+                 rejectAllParkingSpaces={rejectAllParkingSpaces(user.userId, accessToken.accessToken)}
                  dataSource={dataSource}
                  selectParkingItem={selectParkingItem(user.userId, accessToken.accessToken)}/>
         </View>
@@ -441,6 +450,8 @@ App.propTypes = {
   findMyVehicle: PropTypes.func.isRequired,
   checkout: PropTypes.func.isRequired,
   onVehicleListEntryClicked: PropTypes.func.isRequired,
+  clearError: PropTypes.func.isRequired,
+  rejectAllParkingSpaces: PropTypes.func.isRequired,
   loadingAvailableParkingSpaces: PropTypes.bool,
   markers: PropTypes.array,
 };
@@ -472,12 +483,13 @@ export default connect(
     loadingAvailableParkingSpaces: state.app.loadingAvailableParkingSpaces,
     markers: state.app.markers,
     cameraLatLng: state.app.cameraLatLng,
+    error: state.app.error,
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
     showParkingList: (userId, accessToken, location) => actions.showParkingList(userId, accessToken, location, dispatch),
     hideParkingList: () => dispatch(actions.hideParkingList()),
-    onMenuItemSelected: (item) => dispatch(actions.selectMenu(item)),
+    onMenuItemSelected: (userId, accessToken) => (item) => actions.selectMenu(userId, accessToken, item, dispatch),
     updateMenuState: (isOpen) => dispatch(actions.updateMenu(isOpen)),
     closeModal: () => dispatch(actions.closeModal()),
     openModal: () => dispatch(actions.openModal()),
@@ -499,6 +511,7 @@ export default connect(
     findMyVehicle: (userId, accessToken) => (plate) => actions.findMyVehicle(userId, accessToken, plate, dispatch),
     onVehicleListEntryClicked: (userId, accessToken) => (plate) => actions.activeVehicle(userId, accessToken, plate, dispatch),
     updateCurrentLocation: (location) => dispatch(actions.updateCurrentLocation(location)),
-    updateMarkers: (key, location) => actions.updateMarkers(key, location, dispatch),
+    clearError: () => dispatch(actions.clearError()),
+    rejectAllParkingSpaces: (userId, accessToken)   => () => actions.rejectAllParkingSpaces(userId, accessToken, dispatch)
   })
 )(App)

@@ -10,14 +10,6 @@ const HistoryItem = (props) => {
         latitudeDelta: parseFloat('0.2f'),
         longitudeDelta: parseFloat('0.2f'),
       };
-  var annotation = 
-  [{
-    longitude: region.longitude,
-    latitude: region.latitude,
-    view: <Image
-            style={{width: 90, height: 65, resizeMode: 'cover'}}
-            source={require('./../assets/pin-in-the-map-red.png')}/>,
-  }];
 
   return (
     <View style={styles.mainViewContainer}>
@@ -25,8 +17,7 @@ const HistoryItem = (props) => {
     style={styles.map}
     zoomEnabled={false}
     scrollEnabled ={false}
-    region={region}
-    annotations={annotation}/>
+    region={region}/>
     <View style={styles.textViewContainer}>
     <Text style={styles.textAddress}>{address}</Text>
     <Text style={styles.textDate}>{date}</Text>

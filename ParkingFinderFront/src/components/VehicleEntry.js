@@ -6,11 +6,12 @@ const VehicleEntry = (props) => {
 
     const {
         vehicle,
+        activatedVehicle,
         onEntryPressed,
     } = props;
 
     return (
-        <View style={styles.mainContainer}>
+        <View style={activatedVehicle && activatedVehicle == vehicle.plate? styles.activatedVehicleContainer: styles.mainContainer}>
                 <View style={{flex: 0.6, flexDirection: 'column'}}>
                     <View style={{flex: 0.4, justifyContent: 'center', alignItems: 'center', marginTop: 5}}>
                         <Text style={styles.plateText}>
@@ -53,6 +54,21 @@ VehicleEntry.propTypes = {
 }
 
 const styles = StyleSheet.create({
+    activatedVehicleContainer: {
+        margin: 10,
+        height: 120,
+        flexDirection: 'column',
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: '#9b203f',
+        shadowColor: '#9b203f',
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        shadowOffset: {
+            height: 1,
+            width: 0
+        }
+    },
     mainContainer: {
         margin: 10,
         height: 120,
