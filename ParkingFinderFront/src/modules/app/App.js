@@ -40,10 +40,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   map: {
-    flex: 1,
-    marginTop:35,
-    height: window.height*0.55,
+    height: window.height*0.9,
     width:window.width,
+    position:'absolute',
+    top: 0,
+    left: 0,
   },
   textInputContainer: {
     height: window.height*0.05,
@@ -68,25 +69,32 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   searchBar: {
-    top:25,
-    marginLeft: 65,
+    top: 27,
+    left: 60,
     height: window.height*0.05,
     width:window.width*0.8,
-    borderWidth: 1.5,
-    borderColor: '#E4E4E4',
     backgroundColor: '#FFFFFF',
+    zIndex: 10,
+    position: 'absolute',
+    shadowColor: "grey",
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    shadowOffset: {
+      height: 1,
+      width: 0,
+    }
   },
   searchBarButton: {
     borderRadius: 5,
-    paddingTop: 4.5,
-    paddingBottom: 4.5,
+    paddingTop: 6.5,
+    paddingBottom: 6.5,
     paddingLeft: 10,
     paddingRight: 10,
     textAlign: 'left',
     fontSize: 15,
     fontWeight: 'normal',
     color:'grey',
-    flexDirection: 'row',
+    zIndex: 10,
   },
   requestButtonItem: {
     borderColor: '#6B6B76',
@@ -129,13 +137,16 @@ const styles = StyleSheet.create({
     width: 0,
   },
   footerContainer: {
-    flex: 0.15,
     backgroundColor: '#F9F9F9',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop:10,
-    width:350,
-    height:45,
+    width:window.width,
+    height: window.height*0.1,
+    borderTopWidth: 1,
+    borderTopColor: '#B2B2BA',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
   },
   buttonGroupStyle: {
     flexDirection: 'row',
@@ -146,36 +157,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9F9F9',
     borderRadius: 4,
     borderWidth: 1,
-    width: 160,
+    width: 170,
     marginRight: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: window.height*0.07,
   },
-  cancelStyle: {
+  requestButtonItem: {
     borderColor: '#6B6B76',
     backgroundColor: '#6B6B76',
     borderRadius: 4,
     borderWidth: 1,
-    width: 160,
+    width: 170,
     marginLeft: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: window.height*0.07,
   },
   checkInTextStyle: {
     color: '#6B6B76',
     fontFamily: 'Helvetica',
-    paddingTop: 5,
-    paddingBottom: 5,
-    textAlign: 'center',
-    fontSize: 18,
-    fontWeight: 'normal',
-    flexDirection: 'row',
   },
-  cancelTextStyle: {
+  requestButton: {
     color: '#F9F9F9',
     fontFamily: 'Helvetica',
-    paddingTop: 5,
-    textAlign: 'center',
-    fontSize: 18,
-    paddingBottom: 5,
-    fontWeight: 'normal',
-    flexDirection: 'row',
   },
 })
 
@@ -286,7 +291,7 @@ const App = (props) => {
       <TouchableOpacity style={styles.checkInStyle} onPress={() => {
         checkin(user.userId, accessToken.accessToken, location, user.activatedVehicle)
     }}>
-        <Text style={styles.checkInTextStyle}>Check In</Text>
+        <Text style={styles.checkInTextStyle}>CHECK IN</Text>
       </TouchableOpacity>
     <TouchableOpacity style={styles.requestButtonItem} onPress={() => {
         showParkingList(user.userId, accessToken.accessToken, location)
@@ -305,7 +310,7 @@ const App = (props) => {
     <TouchableOpacity style={styles.checkInStyle} onPress={() => {
         checkin(user.userId, accessToken.accessToken, location, user.activatedVehicle)
     }}>
-        <Text style={styles.checkInTextStyle}>Check In</Text>
+        <Text style={styles.checkInTextStyle}>CHECK IN</Text>
     </TouchableOpacity>
     <TouchableOpacity style={styles.cancelStyle} onPress={cancelRequest}>
         <Text style={styles.cancelTextStyle}>Cancel</Text>
