@@ -1,23 +1,17 @@
 import React, { PropTypes } from 'react'
-import { Image, Modal, ScrollView, View, StyleSheet, Text, MapView } from 'react-native';
+import { Image, Modal, ScrollView, View, StyleSheet, Text, Dimensions } from 'react-native';
+
+const window = Dimensions.get('window');
 
 const HistoryItem = (props) => {
 
   const { longitude, latitude, address, date } = props;
-  var region = {
-        latitude: parseFloat(latitude),
-        longitude: parseFloat(longitude),
-        latitudeDelta: parseFloat('0.2f'),
-        longitudeDelta: parseFloat('0.2f'),
-      };
+
+  var mapSrc = 'https://maps.googleapis.com/maps/api/staticmap?center='+latitude+','+longitude+'&zoom=15&size='+window.width+'x140&markers=color:red%7C'+latitude+','+longitude;
 
   return (
     <View style={styles.mainViewContainer}>
-    <MapView
-    style={styles.map}
-    zoomEnabled={false}
-    scrollEnabled ={false}
-    region={region}/>
+    <Image style={styles.map} resizeMode='contain' source={{uri: mapSrc}} />
     <View style={styles.textViewContainer}>
     <Text style={styles.textAddress}>{address}</Text>
     <Text style={styles.textDate}>{date}</Text>

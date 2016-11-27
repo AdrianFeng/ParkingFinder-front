@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
     }
   },
   searchBarButton: {
-    borderRadius: 5,
     paddingTop: 6.5,
     paddingBottom: 6.5,
     paddingLeft: 10,
@@ -313,7 +312,7 @@ const App = (props) => {
         <Text style={styles.checkInTextStyle}>CHECK IN</Text>
     </TouchableOpacity>
     <TouchableOpacity style={styles.cancelStyle} onPress={cancelRequest}>
-        <Text style={styles.cancelTextStyle}>Cancel</Text>
+        <Text style={styles.cancelTextStyle}>CANCEL</Text>
     </TouchableOpacity>
     </View>
     </View>
@@ -325,7 +324,7 @@ const App = (props) => {
     <View style={styles.footerContainer}>
     <View style={styles.buttonGroupStyle}>
     <TouchableOpacity style={styles.requestButtonItem} onPress={() => findMyVehicle(user.userId, accessToken.accessToken)(user.activatedVehicle)}>
-    <Text style={styles.requestButton}>Find My Vehicle</Text>
+    <Text style={styles.requestButton}>FIND MY VEHICLE</Text>
     </TouchableOpacity>
     </View>
     </View>
