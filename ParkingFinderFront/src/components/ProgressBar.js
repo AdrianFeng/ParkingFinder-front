@@ -12,17 +12,16 @@ var TimerMixin = require('react-timer-mixin');
 var ProgressBar = React.createClass({
   mixins: [TimerMixin],
 
-
   getInitialState() {
-    const start = new Date();
-    const end = new Date(start);
-    end.setSeconds(end.getSeconds() + 15);
-    return {
-      progress: 0,
-      start,
-      end,
-      stop: false
-    };
+      const start = new Date();
+      const end = new Date(start);
+      end.setSeconds(end.getSeconds() + 15);
+      return {
+          progress: 0,
+          start,
+          end,
+          stop: false
+      };
   },
 
   componentDidMount() {
@@ -32,21 +31,34 @@ var ProgressBar = React.createClass({
   updateProgress() {
     const now = new Date();
 
-    const progress = (this.state.end - now) / (this.state.end - this.state.start);
-    if (progress < 0 && !this.state.stop) {
+    const progress = 1 - (this.state.end - now) / (this.state.end - this.state.start);
+    if (progress >= 1 && !this.state.stop) {
       this.props.callback();
+      if (this.props.isLoading) {
+          const start = new Date();
+          const end = new Date(start);
+          end.setSeconds(end.getSeconds() + 15);
+          this.setState({
+              progress: 0,
+              start,
+              end,
+              stop: false
+          });
+          return;
+      }
+
       if (this.props.reload) {
           const start = new Date();
           const end = new Date(start);
-          this.setState({ end, start, stop: false });
+          this.setState({ end, start, stop: false , progress: 0});
       }
       else {
           this.setState({ stop: true });
       }
     } else {
       this.setState({ progress: progress });
+      this.requestAnimationFrame(() => this.updateProgress());
     }
-    this.requestAnimationFrame(() => this.updateProgress());
   },
 
   getProgress() {

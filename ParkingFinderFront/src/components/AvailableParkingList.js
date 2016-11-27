@@ -37,20 +37,25 @@ export default class AvailableParkingList extends Component {
       <ActivityIndicatorIOS animating={true} color={'#808080'} size={'small'} style={styles.indicator}/>
       );
   }
+  renderProgressBar(isLoading) {
+    return (
+        <ProgressBar style={styles.ProgressBarStyle} isLoading={isLoading} callback={this.props.rejectAllParkingSpaces}/>
+    )
+  }
 
   render() {
-    const reload = this.props.dataSource._cachedRowCount > 1;
     var header;
     if (this.props.loading) {
       header = (
       <View style={styles.headerContainer}>
       <Text style={styles.headerText}>AVAILABLE PARKING</Text>
+          {this.renderProgressBar(this.props.loading)}
       </View>)
     } else {
       header = (
       <View style={styles.headerContainer}>
       <Text style={styles.headerText}>AVAILABLE PARKING</Text>
-      <ProgressBar style={styles.ProgressBarStyle} callback={this.props.rejectAllParkingSpaces} reload={reload}/>
+          {this.renderProgressBar(this.props.loading)}
       </View>)
     }
     return (

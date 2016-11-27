@@ -59,7 +59,7 @@ const initialState = {
     settingsVisible: false,
 	registerVehicleVisible: false,
     vehicleListVisible: false,
-    AvailabeParkingListVisible: false,
+    availableParkingListVisible: false,
     searchVisible: false,
     destination: "Enter Destination",
    	location: null,
@@ -142,13 +142,13 @@ export default handleActions({
 	[SHOWPARKINGLIST]: (state, action) => {
 		return {
 			...state,
-			AvailabeParkingListVisible: true
+			availableParkingListVisible: true
 		}
 	},
 	[HIDEPARKINGLIST]: (state, action) => {
 		return {
 			...state,
-			AvailabeParkingListVisible: false
+			availableParkingListVisible: false
 		}
 	},
 	[CLOSEMODAL]: (state, action) => {
@@ -302,7 +302,7 @@ export default handleActions({
 				markers,
 				mainButtonStatus:2,
 				displayNavigation: true,
-				AvailabeParkingListVisible: false,
+				availableParkingListVisible: false,
 				cameraLatLng: null
 			}
 		}
@@ -335,7 +335,8 @@ export default handleActions({
 				displayNavigation: false,
 				mainButtonStatus:3,
 				markers: [],
-				cameraLatLng: null
+				cameraLatLng: null,
+                currentMatchedHistory: null
 			}
 		}
 	},
@@ -391,7 +392,7 @@ export default handleActions({
 			markers: [],
 			navigation: null,
 			displayNavigation: false,
-			mainButtonStatus:1,
+			mainButtonStatus:1
 		}
 	},
 	[DISPLAY_AVAILABLE_PARKING_SPACES]: (state, action) => {
@@ -434,18 +435,19 @@ export default handleActions({
 	[REQUEST_PARKING_SPACES]: (state, action) => {
 		// TODO if user terminate the service, do not modify states
 		const payload = action.payload;
-		let dataSource = [];
+		let _dataSource = [];
 		if (!(action.error || payload.loadingAvailableParkingSpaces) && payload.availableParkingSpaces) {
-            dataSource = payload.availableParkingSpaces || [];
+            _dataSource = payload.availableParkingSpaces || [];
 		}
 
-		dataSource = defaultDataSource.cloneWithRows(dataSource);
+		const dataSource = defaultDataSource.cloneWithRows(_dataSource);
 		if (payload.loadingAvailableParkingSpaces) {
 			return {
 				...state,
 				loadingAvailableParkingSpaces: true,
                 dataSource: dataSource,
-				AvailabeParkingListVisible: true
+				availableParkingListVisible: true,
+                currentMatchedHistory: null
 			}
 		}
 		else if (payload.error) {
@@ -453,15 +455,21 @@ export default handleActions({
 				...state,
 				dataSource: dataSource,
                 loadingAvailableParkingSpaces: false,
-                AvailabeParkingListVisible: true,
-				error: action.error
+                availableParkingListVisible: true,
+				error: action.error,
+                currentMatchedHistory: null
 			}
 		}
 		else {
+            const currentMatchedHistory = new Set(state.currentMatchedHistory || []);
+            for (const index in _dataSource) {
+				currentMatchedHistory.add(_dataSource[index]);
+            }
 			return {
 				...state,
                 loadingAvailableParkingSpaces: false,
 				dataSource: dataSource,
+                currentMatchedHistory: Array.from(currentMatchedHistory)
 			}
 		}
 	},

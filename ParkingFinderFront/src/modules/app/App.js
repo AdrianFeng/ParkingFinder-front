@@ -223,7 +223,7 @@ const App = (props) => {
     onRegisterVehicleSubmit,
     onVehicleListEntryClicked,
     onRegisterVehicleButtonClicked,
-    AvailabeParkingListVisible,
+    availableParkingListVisible,
     showParkingList,
     hideParkingList,
     loadParkingList,
@@ -251,7 +251,7 @@ const App = (props) => {
     cameraLatLng,
     error,
     clearError,
-    rejectAllParkingSpaces
+    rejectAllParkingSpaces,
   } = props;
   if (error) {
     alert(error);
@@ -405,7 +405,7 @@ const App = (props) => {
                 onClicked={onRegisterVehicleButtonClicked}
             />
           <AvailableParkingList
-                 visible={AvailabeParkingListVisible}
+                 visible={availableParkingListVisible}
                  requestClose={hideParkingList}
                  loadParkingList={loadParkingList(user.userId, accessToken.accessToken)}
                  loading={loadingAvailableParkingSpaces}
@@ -440,7 +440,7 @@ App.propTypes = {
   historyVisible: PropTypes.bool.isRequired,
   helpVisible: PropTypes.bool.isRequired,
   settingsVisible: PropTypes.bool.isRequired,
-  AvailabeParkingListVisible: PropTypes.bool.isRequired,
+  availableParkingListVisible: PropTypes.bool.isRequired,
   loadParkingList: PropTypes.func.isRequired,
   loadHistoryList: PropTypes.func.isRequired,
   onTextFieldChanged: PropTypes.func.isRequired,
@@ -480,7 +480,7 @@ export default connect(
     accessToken: state.app.accessToken,
     user: state.app.user,
     form: state.app.form,
-    AvailabeParkingListVisible: state.app.AvailabeParkingListVisible,
+    availableParkingListVisible: state.app.availableParkingListVisible,
     dataSource:state.app.dataSource,
     dataSourceHistory: state.app.dataSourceHistory,
     searchVisible: state.app.searchVisible,
@@ -493,6 +493,8 @@ export default connect(
     markers: state.app.markers,
     cameraLatLng: state.app.cameraLatLng,
     error: state.app.error,
+    isProgressBarStop: state.app.isProgressBarStop,
+    progress: state.app.progress
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
@@ -521,6 +523,6 @@ export default connect(
     onVehicleListEntryClicked: (userId, accessToken) => (plate) => actions.activeVehicle(userId, accessToken, plate, dispatch),
     updateCurrentLocation: (location) => dispatch(actions.updateCurrentLocation(location)),
     clearError: () => dispatch(actions.clearError()),
-    rejectAllParkingSpaces: (userId, accessToken)   => () => actions.rejectAllParkingSpaces(userId, accessToken, dispatch)
+    rejectAllParkingSpaces: (userId, accessToken)   => () => actions.rejectAllParkingSpaces(userId, accessToken, dispatch),
   })
 )(App)
