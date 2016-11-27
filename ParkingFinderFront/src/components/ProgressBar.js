@@ -17,7 +17,7 @@ var ProgressBar = React.createClass({
       const end = new Date(start);
       end.setSeconds(end.getSeconds() + 15);
       return {
-          progress: 0,
+          progress: -1,
           start,
           end,
           stop: false
@@ -29,40 +29,42 @@ var ProgressBar = React.createClass({
   },
 
   updateProgress() {
-    const now = new Date();
 
-    const progress = 1 - (this.state.end - now) / (this.state.end - this.state.start);
-    if (progress >= 1 && !this.state.stop) {
-      this.props.callback();
-      if (this.props.isLoading) {
+    if (this.props.isLoading || this.state.progress >= 1) {
+      if (this.state.progress != -1) {
+          this.props.callback();
+          this.setState({
+              progress: -1,
+          });
+      }
+      else {
+          this.setState({});
+      }
+    } else {
+        const now = new Date();
+      if (this.state.progress == -1) {
           const start = new Date();
           const end = new Date(start);
           end.setSeconds(end.getSeconds() + 15);
           this.setState({
               progress: 0,
               start,
-              end,
-              stop: false
-          });
-          return;
-      }
-
-      if (this.props.reload) {
-          const start = new Date();
-          const end = new Date(start);
-          this.setState({ end, start, stop: false , progress: 0});
+              end
+          })
       }
       else {
-          this.setState({ stop: true });
+          const progress = 1 - (this.state.end - now) / (this.state.end - this.state.start);
+          this.setState({
+              progress,
+          })
+
       }
-    } else {
-      this.setState({ progress: progress });
-      this.requestAnimationFrame(() => this.updateProgress());
     }
+    this.requestAnimationFrame(() => this.updateProgress());
   },
 
   getProgress() {
-    return this.state.progress;
+    return this.state.progress < 0? 0: this.state.progress;
   },
 
   render() {
