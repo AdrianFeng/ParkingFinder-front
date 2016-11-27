@@ -373,7 +373,12 @@ const App = (props) => {
             markers={markers} 
             />
           {mainButton}
-            <MyInfo visible={myInfoVisible} requestClose={closeModal} />
+            <MyInfo visible={myInfoVisible} 
+                requestClose={closeModal} 
+                profileUrl={user.profilePictureUrl} 
+                firstName={user.firstName} 
+                lastName={user.lastName}
+                email={user.email}/> 
             <History 
                 visible={historyVisible} 
                 requestClose={closeModal} 

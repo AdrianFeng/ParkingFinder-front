@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
-import { StyleSheet, Text, TouchableOpacity, Modal, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, Modal, View, Image, Dimensions } from 'react-native';
+const window = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     mainViewContainer: {
@@ -33,11 +34,49 @@ const styles = StyleSheet.create({
     },
     infoContainer: {
       flex: 0.9,
+      flexDirection: 'column',
+    },
+    avatarContainer: {
+      marginTop: 40,
+      marginLeft: 25,
+      height: 96,
+    },
+    avatar: {
+      width: 96,
+      height: 96,
+      borderRadius: 48,
+    },
+    name: {
+      marginLeft: 30,
+      color: 'black',
+      marginTop: 10,
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    nameItem: {
+      marginLeft: 30,
+      color: '#B2B2BA',
+      fontSize: 14,
+
+    },
+    nameContainer: {
+      marginTop: 40,
+      flexDirection: 'row',
+      width: window.width,
+    },
+    innerContainer: {
+      flexDirection: 'column',
+      width: window.width*0.5,
+    },
+    emailContainer: {
+      marginTop: 30,
+      flexDirection: 'column',
+      width: window.width,
     }
 });
 
 const MyInfo = (props) => {
-  const { visible, requestClose } = props
+  const { visible, requestClose, profileUrl, firstName, lastName, email } = props
 
   return (
     <Modal
@@ -53,7 +92,25 @@ const MyInfo = (props) => {
             <Text style={styles.headerText}>MY ACCOUNT</Text>
           </View>
           <View style={styles.infoContainer}>
-
+            <View style={styles.avatarContainer}>
+              <Image
+                style={styles.avatar}
+                source={{uri: profileUrl}}/>
+            </View>
+            <View style={styles.nameContainer}>
+              <View style={styles.innerContainer}>
+                <Text style={styles.nameItem}>First</Text>
+                <Text style={styles.name}>{firstName}</Text>
+              </View>
+              <View style={styles.innerContainer}>
+                <Text style={styles.nameItem}>Last</Text>
+                <Text style={styles.name}>{lastName}</Text>
+              </View>
+            </View>
+            <View style={styles.emailContainer}>
+                <Text style={styles.nameItem}>Email</Text>
+                <Text style={styles.name}>{email}</Text>
+            </View>
           </View>
       </View>
     </Modal>
