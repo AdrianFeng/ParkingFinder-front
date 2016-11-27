@@ -77,7 +77,7 @@ const Menu = (props) => {
         </TouchableOpacity>
         <TouchableOpacity onPress={() => {onItemSelected('LOGOUT'), popupModal()}}>
           <View style={styles.menuItem} onPress={() => onItemSelected('LOGOUT')}>
-            <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuHelp.png')} />
+            <Image style={styles.menuIcon} resizeMode='contain' source={require('./../assets/menuLogout.png')} />
             <Text style={styles.menuItemText}>LOGOUT</Text>
           </View>
         </TouchableOpacity>
