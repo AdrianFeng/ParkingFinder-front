@@ -181,7 +181,48 @@ const styles = StyleSheet.create({
     color: '#F9F9F9',
     fontFamily: 'Helvetica',
   },
-})
+  reservedParkingSpaceBlock: {
+      backgroundColor: '#F9F9F9',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width:window.width,
+      height: window.height*0.1,
+      borderTopWidth: 1,
+      borderTopColor: '#B2B2BA',
+      position: 'absolute',
+      bottom: window.height*0.1,
+      left: 0,
+  },
+  vehicleActivateButtonStyle: {
+      flex: 1,
+      backgroundColor: 'white',
+      borderRadius: 0,
+      borderWidth: 0,
+      marginTop: 10
+  },
+  vehicleActivateTextStyle: {
+      color: '#6B6B76',
+      fontFamily: 'Helvetica',
+      fontWeight: 'bold'
+  },
+  plateText: {
+      color: '#3A3A48',
+      fontFamily: 'Helvetica',
+      fontSize: 12,
+      fontWeight: 'bold',
+      flex: 1
+  },
+  innerTextContainer: {
+      flex: 0.5,
+      justifyContent: 'center',
+      alignItems: 'center',
+  },
+  innerText: {
+      color: '#6B6B76',
+      fontFamily: 'Helvetica',
+      fontSize: 12,
+  }
+});
 
 const Mask = (props) => {
   const {visible} = props;
@@ -345,6 +386,32 @@ const App = (props) => {
     default:
     break;
   }
+  let reservedParkingSpaceBlock = null;
+  if (navigation && navigation.vehicle) {
+      reservedParkingSpaceBlock = (
+        <View style={styles.reservedParkingSpaceBlock}>
+          <Text style={styles.plateText}>
+              {navigation.vehicle.plate}
+          </Text>
+          <View style={{flex: 0.5, flexDirection: 'row'}}>
+            <View style={styles.innerTextContainer}>
+              <Text style={styles.innerText}>{navigation.vehicle.brand}</Text>
+            </View>
+            <View style={styles.innerTextContainer}>
+              <Text style={styles.innerText}>{navigation.vehicle.model}</Text>
+            </View>
+          </View>
+          <View style={{flex: 0.5, flexDirection: 'row'}}>
+            <View style={styles.innerTextContainer}>
+              <Text style={styles.innerText}>{navigation.vehicle.color}</Text>
+            </View>
+            <View style={styles.innerTextContainer}>
+              <Text style={styles.innerText}>{navigation.vehicle.year}</Text>
+            </View>
+          </View>
+        </View>
+      );
+  }
 
   return (
       <SideMenu
@@ -376,6 +443,7 @@ const App = (props) => {
             allowScrollGesturesDuringRotateOrZoom={true}
             markers={markers} 
             />
+          {reservedParkingSpaceBlock}
           {mainButton}
             <MyInfo visible={myInfoVisible} 
                 requestClose={closeModal} 
@@ -463,6 +531,7 @@ App.propTypes = {
   rejectAllParkingSpaces: PropTypes.func.isRequired,
   loadingAvailableParkingSpaces: PropTypes.bool,
   markers: PropTypes.array,
+  navigation: PropTypes.object,
 };
 
 export default connect(
@@ -494,7 +563,8 @@ export default connect(
     cameraLatLng: state.app.cameraLatLng,
     error: state.app.error,
     isProgressBarStop: state.app.isProgressBarStop,
-    progress: state.app.progress
+    progress: state.app.progress,
+    navigation: state.app.navigation
   }),
   (dispatch) => ({
     toggle: () => dispatch(actions.toggleMenu()),
