@@ -182,46 +182,22 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica',
   },
   reservedParkingSpaceBlock: {
-      backgroundColor: '#F9F9F9',
-      justifyContent: 'center',
-      alignItems: 'center',
-      width:window.width,
-      height: window.height*0.1,
-      borderTopWidth: 1,
-      borderTopColor: '#B2B2BA',
-      position: 'absolute',
-      bottom: window.height*0.1,
-      left: 0,
+    backgroundColor: '#F9F9F9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width:window.width,
+    height: window.height*0.1,
+    borderTopWidth: 1,
+    borderTopColor: '#B2B2BA',
+    position: 'absolute',
+    bottom: window.height*0.1-1,
+    left: 0,
   },
-  vehicleActivateButtonStyle: {
-      flex: 1,
-      backgroundColor: 'white',
-      borderRadius: 0,
-      borderWidth: 0,
-      marginTop: 10
+  reservedParkingText: {
+    color: '#3A3A48',
+    fontFamily: 'Helvetica',
+    fontSize: 12,
   },
-  vehicleActivateTextStyle: {
-      color: '#6B6B76',
-      fontFamily: 'Helvetica',
-      fontWeight: 'bold'
-  },
-  plateText: {
-      color: '#3A3A48',
-      fontFamily: 'Helvetica',
-      fontSize: 12,
-      fontWeight: 'bold',
-      flex: 1
-  },
-  innerTextContainer: {
-      flex: 0.5,
-      justifyContent: 'center',
-      alignItems: 'center',
-  },
-  innerText: {
-      color: '#6B6B76',
-      fontFamily: 'Helvetica',
-      fontSize: 12,
-  }
 });
 
 const Mask = (props) => {
@@ -390,25 +366,7 @@ const App = (props) => {
   if (navigation && navigation.vehicle) {
       reservedParkingSpaceBlock = (
         <View style={styles.reservedParkingSpaceBlock}>
-          <Text style={styles.plateText}>
-              {navigation.vehicle.plate}
-          </Text>
-          <View style={{flex: 0.5, flexDirection: 'row'}}>
-            <View style={styles.innerTextContainer}>
-              <Text style={styles.innerText}>{navigation.vehicle.brand}</Text>
-            </View>
-            <View style={styles.innerTextContainer}>
-              <Text style={styles.innerText}>{navigation.vehicle.model}</Text>
-            </View>
-          </View>
-          <View style={{flex: 0.5, flexDirection: 'row'}}>
-            <View style={styles.innerTextContainer}>
-              <Text style={styles.innerText}>{navigation.vehicle.color}</Text>
-            </View>
-            <View style={styles.innerTextContainer}>
-              <Text style={styles.innerText}>{navigation.vehicle.year}</Text>
-            </View>
-          </View>
+          <Text style={styles.reservedParkingText}>Please look for {navigation.vehicle.year} {navigation.vehicle.color} {navigation.vehicle.brand} {navigation.vehicle.model} with plate {navigation.vehicle.plate}</Text>
         </View>
       );
   }
