@@ -311,8 +311,8 @@ const App = (props) => {
     }}>
         <Text style={styles.checkInTextStyle}>CHECK IN</Text>
     </TouchableOpacity>
-    <TouchableOpacity style={styles.cancelStyle} onPress={cancelRequest}>
-        <Text style={styles.cancelTextStyle}>CANCEL</Text>
+    <TouchableOpacity style={styles.requestButtonItem} onPress={cancelRequest}>
+        <Text style={styles.requestButton}>CANCEL</Text>
     </TouchableOpacity>
     </View>
     </View>

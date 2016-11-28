@@ -7,7 +7,7 @@ const HistoryItem = (props) => {
 
   const { longitude, latitude, address, date } = props;
 
-  var mapSrc = 'https://maps.googleapis.com/maps/api/staticmap?center='+latitude+','+longitude+'&zoom=15&size='+window.width+'x140&markers=color:red%7C'+latitude+','+longitude;
+  var mapSrc = 'https://maps.googleapis.com/maps/api/staticmap?center='+latitude+','+longitude+'&zoom=15&size='+window.width+'x140&markers=color:red%7C'+latitude+','+longitude+'&scale=2';
 
   return (
     <View style={styles.mainViewContainer}>

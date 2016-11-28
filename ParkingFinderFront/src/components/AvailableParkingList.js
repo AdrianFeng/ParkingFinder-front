@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
   mainViewContainer: {
     flex: 1, 
     flexDirection:'column',
+    backgroundColor: '#F9F9F9',
   },
   headerContainer: {
     flex: 0.1,

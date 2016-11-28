@@ -1,35 +1,31 @@
 import React, { PropTypes } from 'react'
 import TextField from 'react-native-md-textinput';
-import { Image, Modal, ScrollView, View, StyleSheet, Text } from 'react-native';
+import { Image, Modal, ScrollView, View, StyleSheet, Text, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import Button from 'apsl-react-native-button';
-import GoogleMap  from 'react-native-maps-google';
+
+const window = Dimensions.get('window');
 
 const ParkingItem = (props) => {
 
   const { plate, longitude, latitude, address, distance , selectParkingItem } = props;
+
+  var mapSrc = 'https://maps.googleapis.com/maps/api/staticmap?center='+latitude+','+longitude+'&zoom=17&size='+window.width+'x140&markers=color:red%7C'+latitude+','+longitude+'&scale=2';
+
   return (
-    <View style={styles.mainViewContainer}>
-    <GoogleMap
-    cameraPosition={{auto: false, latitude: latitude, longitude: longitude, zoom: 15}}
-    style={styles.map}
-    markers={[
-      {
-        id: plate,
-        latitude: latitude,
-        longitude: longitude,
-      },
-    ]}
-      />
+    <TouchableOpacity style={styles.mainViewContainer} onPress={() => Alert.alert(
+            'Confirm',
+            'Reserve this parking space',
+            [
+              {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+              {text: 'OK', onPress: () => selectParkingItem(plate)},
+            ]
+    )}>
+    <Image style={styles.map} resizeMode='contain' source={{uri: mapSrc}} />
     <View style={styles.textViewContainer}>
-    <Text style={styles.textStyle}>{address}</Text>
-    <Text style={styles.textStyle}>{distance}</Text>
+    <Text style={styles.textAddress}>{address}</Text>
+    <Text style={styles.textDistance}>{distance}m</Text>
     </View>
-    <Button
-      style={styles.requestStyle} textStyle={styles.requestTextStyle}
-      onPress={()=>{selectParkingItem(plate)}}>
-        Reserve
-    </Button>
-    </View>
+    </TouchableOpacity>
     );
 
 
@@ -41,46 +37,29 @@ const styles = StyleSheet.create({
     flex: 1, 
     flexDirection:'column',
     height: 200,
-    borderWidth: 0.5,
-    margin: 5,
-    borderColor: '#6B6B76',
-    borderBottomLeftRadius: 4,
-    borderBottomRightRadius: 4,
+    marginTop: 5,
+    marginBottom: 5,
+    backgroundColor: 'white',
   },
   textViewContainer: {
-  	flex: 0.2,
-  	flexDirection:'row',
-  	justifyContent: 'space-around',
-    height: 20,
-    alignItems: 'center', 
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    flex: 0.3,
+    flexDirection:'column',
+    marginLeft: 10,
   },
   map: {
-  	flex: 1,
+    flex: 0.7,
   },
-  textStyle: {
+  textAddress: {
+    color: 'black',
+    fontFamily: 'Helvetica',
+    fontSize: 14,
+    marginTop: 10,
+  },
+  textDistance: {
     color: '#6B6B76',
     fontFamily: 'Helvetica',
-  },
-  requestStyle: {
-    backgroundColor: '#F5FCFF',
-    borderTopColor: '#6B6B76',
-    borderBottomColor: '#F5FCFF',
-    borderRightColor: '#F5FCFF',
-    borderLeftColor: '#F5FCFF',
-    borderWidth: 1,
-    height: 25,
-    paddingTop:5,
-    borderRadius:0,
-  },
-  requestTextStyle: {
-    color: '#6B6B76',
-    fontFamily: 'Helvetica',
+    fontSize: 12,
+    marginTop: 5,
   },
 });
 
