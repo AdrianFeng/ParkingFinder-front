@@ -165,18 +165,20 @@ export const showParkingList = (
         type: REQUEST_PARKING_SPACES,
         payload: {loadingAvailableParkingSpaces : true},
     });
-    api.requestParkingSpaces(
-        userId,
-        accessToken,
-        location,
-        ( payload ) => {
-            payload['loadingAvailableParkingSpaces'] = false;
-            dispatch({
-                type: REQUEST_PARKING_SPACES,
-                payload: payload,
-            });
-        }
-    );
+    navigator.geolocation.getCurrentPosition((_location) => {
+        api.requestParkingSpaces(
+            userId,
+            accessToken,
+            {lat: _location.coords.latitude, lng: _location.coords.longitude},
+            (payload) => {
+                payload['loadingAvailableParkingSpaces'] = false;
+                dispatch({
+                    type: REQUEST_PARKING_SPACES,
+                    payload: payload,
+                });
+            }
+        );
+    });
 };
 
 export const hideParkingList = () => {
@@ -271,24 +273,26 @@ export const cancelRequest = () => {
 };
 
 export const checkin = (userId, accessToken, plate, location, dispatch) => {
-    api.checkin(
-        userId,
-        accessToken,
-        plate,
-        location,
-        ( payload ) => {
-            dispatch({
-                type: SAVE_TO_HISTORY,
-                payload: payload
-            });
+    navigator.geolocation.getCurrentPosition((_location) => {
+        api.checkin(
+            userId,
+            accessToken,
+            plate,
+            {lat: _location.coords.latitude, lng: _location.coords.longitude},
+            ( payload ) => {
+                dispatch({
+                    type: SAVE_TO_HISTORY,
+                    payload: payload
+                });
 
-            dispatch({
-                type: CHECKIN,
-                payload:payload
-            })
+                dispatch({
+                    type: CHECKIN,
+                    payload:payload
+                })
 
-        }
-    );
+            }
+        );
+    });
 };
 
 export const checkout = (userId, accessToken, plate, dispatch) => {

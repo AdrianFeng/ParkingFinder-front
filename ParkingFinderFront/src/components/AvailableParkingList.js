@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import TextField from 'react-native-md-textinput';
-import { Modal, ListView, View, StyleSheet, Text, ActivityIndicatorIOS } from 'react-native';
+import { Modal, ListView, View, StyleSheet, Text, ActivityIndicator } from 'react-native';
 import Button from 'apsl-react-native-button';
 import ParkingItem from './ParkingItem'
 import ProgressBar from './ProgressBar'
@@ -34,7 +34,7 @@ export default class AvailableParkingList extends Component {
 
   renderIndicator() {
     return (
-      <ActivityIndicatorIOS animating={true} color={'#808080'} size={'small'} style={styles.indicator}/>
+      <ActivityIndicator animating={true} color={'#808080'} size={'small'} style={styles.indicator}/>
       );
   }
   renderProgressBar(isLoading) {
